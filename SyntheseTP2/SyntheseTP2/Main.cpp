@@ -19,6 +19,13 @@ void color(vector<unsigned char> *img, int index, float r, float g, float b, flo
     img->at(index+3) = a;
 }
 
+void addSphere(vector<Sphere>* spheres, Sphere sphere)
+{
+    int size = spheres->size();
+    spheres->resize(size + 1);
+    spheres->at(size) = sphere;
+}
+
 float raySphereIntersect(Vector3 r0, Vector3 rd, vector<Sphere> vs0/*, vector<float> vsr*/) {
     // - r0: ray origin
     // - rd: normalized ray direction
@@ -55,26 +62,15 @@ int main(int argc, char* argv[]) {
         image.resize(width * height * 4);
 
         vector<Sphere> spheres;
-        spheres.resize(2);
-
-        vector<float> rayonsSpheres;
-        rayonsSpheres.resize(2);
+        //spheres.resize(2);
 
         Vector3 plan = Vector3(0, 0, 0);
 
         Sphere sphere = Sphere(100, Vector3(200, 100, 150));
-        /*Vector3 sphere = Vector3(200, 100, 150);
-        float rayonSphere = 100;*/
-
-        spheres[0] = sphere;
-        //rayonsSpheres[0] = rayonSphere;
+        addSphere(&spheres, sphere);
 
         Sphere sphere2 = Sphere(60, Vector3(400, 350, 200));
-        /*Vector3 sphere2 = Vector3(400, 350, 200);
-        float rayonSphere2 = 60;*/
-
-        spheres[1] = sphere2;
-        //rayonsSpheres[1] = rayonSphere2;
+        addSphere(&spheres, sphere2);
 
         for (unsigned y = 0; y < width; y++)
         {
@@ -82,7 +78,7 @@ int main(int argc, char* argv[]) {
             {
 
                 Vector3 rayon = Vector3(plan.x + x, plan.y + y, plan.z);
-                float inter = raySphereIntersect(rayon, Vector3(0, 0, 1), spheres/*, rayonsSpheres*/);
+                float inter = raySphereIntersect(rayon, Vector3(0, 0, 1), spheres);
                 if (inter >= 0)
                 {
                     color(&image, 4 * width * y + 4 * x, 255 * (inter / 255), 255 * (inter / 255), 255 * (inter / 255), 255);
