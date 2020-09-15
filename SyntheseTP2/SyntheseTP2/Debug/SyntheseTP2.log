@@ -20,6 +20,9 @@ C:\Users\lmarnat\Documents\GitHub\SimulationLumiere\SyntheseTP2\SyntheseTP2\Main
               _Ty=unsigned char
           ]
 C:\Users\lmarnat\Documents\GitHub\SimulationLumiere\SyntheseTP2\SyntheseTP2\Main.cpp(44,13): warning C4244: 'initialisation' : conversion de 'double' en 'float', perte possible de données
-C:\Users\lmarnat\Documents\GitHub\SimulationLumiere\SyntheseTP2\SyntheseTP2\Main.cpp(49,53): warning C4244: '=' : conversion de 'double' en 'float', perte possible de données
+C:\Users\lmarnat\Documents\GitHub\SimulationLumiere\SyntheseTP2\SyntheseTP2\Main.cpp(48,53): warning C4244: '=' : conversion de 'double' en 'float', perte possible de données
 C:\Users\lmarnat\Documents\GitHub\SimulationLumiere\SyntheseTP2\SyntheseTP2\Main.cpp(58,20): warning C4018: '<' : incompatibilité signed/unsigned
+C:\Users\lmarnat\Documents\GitHub\SimulationLumiere\SyntheseTP2\SyntheseTP2\Main.cpp(111,80): warning C4244: 'argument' : conversion de 'double' en 'float', perte possible de données
+C:\Users\lmarnat\Documents\GitHub\SimulationLumiere\SyntheseTP2\SyntheseTP2\Main.cpp(111,70): warning C4244: 'argument' : conversion de 'unsigned int' en 'float', perte possible de données
+C:\Users\lmarnat\Documents\GitHub\SimulationLumiere\SyntheseTP2\SyntheseTP2\Main.cpp(111,68): warning C4244: 'argument' : conversion de 'unsigned int' en 'float', perte possible de données
   SyntheseTP2.vcxproj -> C:\Users\lmarnat\Documents\GitHub\SimulationLumiere\SyntheseTP2\Debug\SyntheseTP2.exe

@@ -45,9 +45,9 @@ bool raySphereIntersect(Rayon r, Sphere s, float *rayon) {
     float c = s0_r0.dot(s0_r0) - (sr * sr);
     if (b * b - 4.0 * a * c >= 0.0)
     {
-        inte = true;
         *rayon = (-b - sqrt((b * b) - 4.0 * a * c)) / (2.0 * a);
-
+        if(*rayon >= 0)
+            inte = true;
     }
     return inte;
 }
@@ -106,20 +106,19 @@ int main(int argc, char* argv[]) {
                 //cout << inter << endl;
                 if (inter)
                 {
-                    
-                    //bool inte2 = false;
-                    //Rayon lampee = Rayon(Vector3(0, 1, 0), Vector3(plan.x + x, plan.y + y, plan.z + inter + 0.02));
-                    //float lampe = raySphereIntersect(lampee, spheres,&inte2);
-                    //cout << inte2 << endl;
-                    //if (lampe == -1)
+                   // 
+                    float mnRayon;
+                    Rayon lampee = Rayon(Vector3(1, 0, 0), Vector3(x,y,minRayon-0.02));
+                    bool inter2 = intersectSpheres(lampee, spheres, &mnRayon);
+                    //cout << mnRayon << endl;
+                    if (!inter2)
                         color(&image, 4 * width * y + 4 * x, 255 - minRayon, 255 - minRayon, 255 - minRayon, 255);
-                    //else
-                       // color(&image, 4 * width * y + 4 * x, 255, 0, 0, 255);
+                    else
+                        color(&image, 4 * width * y + 4 * x, 255, 0, 0, 255);
                 }
                 else
                 {
-                    //if(!inte)
-                        color(&image, 4 * width * y + 4 * x, 0, 0, 127, 255);
+                    color(&image, 4 * width * y + 4 * x, 0, 0, 127, 255);
                 }
             }
         }
