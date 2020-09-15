@@ -1,5 +1,5 @@
 #include "lodepng.h"
-#include "vector3.h"
+#include "Sphere.h"
 #include <iostream>
 using namespace std;
 
@@ -19,7 +19,7 @@ void color(vector<unsigned char> *img, int index, float r, float g, float b, flo
     img->at(index+3) = a;
 }
 
-float raySphereIntersect(Vector3 r0, Vector3 rd, vector<Vector3> vs0, vector<float> vsr) {
+float raySphereIntersect(Vector3 r0, Vector3 rd, vector<Sphere> vs0/*, vector<float> vsr*/) {
     // - r0: ray origin
     // - rd: normalized ray direction
     // - s0: sphere center
@@ -29,8 +29,8 @@ float raySphereIntersect(Vector3 r0, Vector3 rd, vector<Vector3> vs0, vector<flo
 
     for (int i = 0; i < vs0.size(); i++)
     {
-        Vector3 s0 = vs0[i];
-        float sr = vsr[i];
+        Vector3 s0 = vs0[i].GetCentre();
+        float sr = vs0[i].GetRayon();
 
         float a = rd.dot(rd);
         Vector3 s0_r0 = r0 - s0;
@@ -38,7 +38,9 @@ float raySphereIntersect(Vector3 r0, Vector3 rd, vector<Vector3> vs0, vector<flo
         float c = s0_r0.dot(s0_r0) - (sr * sr);
         if (b * b - 4.0 * a * c >= 0.0)
         {
-            return (-b - sqrt((b * b) - 4.0 * a * c)) / (2.0 * a);
+            float r = (-b - sqrt((b * b) - 4.0 * a * c)) / (2.0 * a);
+            if(r >= 0)
+                return r;
         }
     }
     return -1.0;
@@ -52,7 +54,7 @@ int main(int argc, char* argv[]) {
         vector<unsigned char> image;
         image.resize(width * height * 4);
 
-        vector<Vector3> spheres;
+        vector<Sphere> spheres;
         spheres.resize(2);
 
         vector<float> rayonsSpheres;
@@ -60,17 +62,19 @@ int main(int argc, char* argv[]) {
 
         Vector3 plan = Vector3(0, 0, 0);
 
-        Vector3 sphere = Vector3(200, 100, 150);
-        float rayonSphere = 100;
+        Sphere sphere = Sphere(100, Vector3(200, 100, 150));
+        /*Vector3 sphere = Vector3(200, 100, 150);
+        float rayonSphere = 100;*/
 
         spheres[0] = sphere;
-        rayonsSpheres[0] = rayonSphere;
+        //rayonsSpheres[0] = rayonSphere;
 
-        Vector3 sphere2 = Vector3(400, 350, 200);
-        float rayonSphere2 = 60;
+        Sphere sphere2 = Sphere(60, Vector3(400, 350, 200));
+        /*Vector3 sphere2 = Vector3(400, 350, 200);
+        float rayonSphere2 = 60;*/
 
         spheres[1] = sphere2;
-        rayonsSpheres[1] = rayonSphere2;
+        //rayonsSpheres[1] = rayonSphere2;
 
         for (unsigned y = 0; y < width; y++)
         {
@@ -78,7 +82,7 @@ int main(int argc, char* argv[]) {
             {
 
                 Vector3 rayon = Vector3(plan.x + x, plan.y + y, plan.z);
-                float inter = raySphereIntersect(rayon, Vector3(0, 0, 1), spheres, rayonsSpheres);
+                float inter = raySphereIntersect(rayon, Vector3(0, 0, 1), spheres/*, rayonsSpheres*/);
                 if (inter >= 0)
                 {
                     color(&image, 4 * width * y + 4 * x, 255 * (inter / 255), 255 * (inter / 255), 255 * (inter / 255), 255);
@@ -89,8 +93,6 @@ int main(int argc, char* argv[]) {
                     {
                         color(&image, 4 * width * y + 4 * x, 255, 0, 0, 255);
                     }
-                    else
-                        cout << "Erreur: sphere hors du plan" << endl;
                 }
             }
         }
