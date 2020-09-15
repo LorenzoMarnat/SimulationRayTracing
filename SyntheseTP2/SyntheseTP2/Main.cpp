@@ -28,7 +28,7 @@ void addSphere(vector<Sphere>* spheres, Sphere sphere)
     spheres->at(size) = sphere;
 }
 
-bool raySphereIntersect(Rayon r, Sphere s, float *rayon) {
+bool raySphereIntersect(Rayon r, Sphere s, float *distance) {
     // - r0: ray origin
     // - rd: normalized ray direction
     // - s0: sphere center
@@ -45,14 +45,14 @@ bool raySphereIntersect(Rayon r, Sphere s, float *rayon) {
     float c = s0_r0.dot(s0_r0) - (sr * sr);
     if (b * b - 4.0 * a * c >= 0.0)
     {
-        *rayon = (-b - sqrt((b * b) - 4.0 * a * c)) / (2.0 * a);
-        if(*rayon >= 0)
+        *distance = (-b - sqrt((b * b) - 4.0 * a * c)) / (2.0 * a);
+        if(*distance >= 0)
             inte = true;
     }
     return inte;
 }
 
-bool intersectSpheres(Rayon r, vector<Sphere> spheres, float* rayon)
+bool intersectSpheres(Rayon r, vector<Sphere> spheres, float* distance)
 {
     bool t = false;
     for(int i = 0;i< spheres.size();i++)
@@ -63,12 +63,12 @@ bool intersectSpheres(Rayon r, vector<Sphere> spheres, float* rayon)
         {
             if (!t)
             {
-                *rayon = rr;
+                *distance = rr;
             }
             else
             {
-                if (rr < *rayon)
-                    *rayon = rr;
+                if (rr < *distance)
+                    *distance = rr;
             }
             t = true;
         }
@@ -97,24 +97,22 @@ int main(int argc, char* argv[]) {
         {
             for (unsigned x = 0; x < width; x++) 
             {
-                float minRayon;
+                float minDistance;
 
                 Rayon rayon = Rayon(Vector3(0, 0, 1), Vector3(plan.x + x, plan.y + y, plan.z));
-                bool inter = intersectSpheres(rayon, spheres, &minRayon);
+                bool inter = intersectSpheres(rayon, spheres, &minDistance);
 
-                //cout << inte << endl;
-                //cout << inter << endl;
                 if (inter)
                 {
                    // 
-                    float mnRayon;
-                    Rayon lampee = Rayon(Vector3(1, 0, 0), Vector3(x,y,minRayon-0.02));
-                    bool inter2 = intersectSpheres(lampee, spheres, &mnRayon);
+                    float minDist;
+                    Rayon lampee = Rayon(Vector3(0, 1, 0), Vector3(x,y,minDistance-0.02));
+                    bool inter2 = intersectSpheres(lampee, spheres, &minDist);
                     //cout << mnRayon << endl;
                     if (!inter2)
-                        color(&image, 4 * width * y + 4 * x, 255 - minRayon, 255 - minRayon, 255 - minRayon, 255);
+                        color(&image, 4 * width * y + 4 * x, 255 - minDistance, 255 - minDistance, 255 - minDistance, 255);
                     else
-                        color(&image, 4 * width * y + 4 * x, 255, 0, 0, 255);
+                        color(&image, 4 * width * y + 4 * x, 25, 25, 25, 255);
                 }
                 else
                 {
