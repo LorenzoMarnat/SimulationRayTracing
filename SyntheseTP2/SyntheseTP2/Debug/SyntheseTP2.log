@@ -22,6 +22,4 @@ C:\Users\lmarnat\Documents\GitHub\SimulationLumiere\SyntheseTP2\SyntheseTP2\Main
 C:\Users\lmarnat\Documents\GitHub\SimulationLumiere\SyntheseTP2\SyntheseTP2\Main.cpp(38,23): warning C4018: '<' : incompatibilité signed/unsigned
 C:\Users\lmarnat\Documents\GitHub\SimulationLumiere\SyntheseTP2\SyntheseTP2\Main.cpp(44,17): warning C4244: 'initialisation' : conversion de 'double' en 'float', perte possible de données
 C:\Users\lmarnat\Documents\GitHub\SimulationLumiere\SyntheseTP2\SyntheseTP2\Main.cpp(48,21): warning C4244: 'initialisation' : conversion de 'double' en 'float', perte possible de données
-  Rayon.cpp
-  Génération de code en cours...
   SyntheseTP2.vcxproj -> C:\Users\lmarnat\Documents\GitHub\SimulationLumiere\SyntheseTP2\Debug\SyntheseTP2.exe

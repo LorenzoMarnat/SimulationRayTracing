@@ -34,7 +34,7 @@ float raySphereIntersect(Rayon r, vector<Sphere> vs0/*, vector<float> vsr*/) {
     // - sr: sphere radius
     // - Returns distance from r0 to first intersecion with sphere,
     //   or -1.0 if no intersection.
-
+    float minR = -1;
     for (int i = 0; i < vs0.size(); i++)
     {
         Vector3 s0 = vs0[i].GetCentre();
@@ -46,10 +46,12 @@ float raySphereIntersect(Rayon r, vector<Sphere> vs0/*, vector<float> vsr*/) {
         if (b * b - 4.0 * a * c >= 0.0)
         {
             float r = (-b - sqrt((b * b) - 4.0 * a * c)) / (2.0 * a);
-            if(r >= 0)
-                return r;
+            if (r <= minR || minR == -1)
+                minR = r;
         }
     }
+    if (minR >= 0)
+        return minR;
     return -1.0;
 }
 
@@ -62,27 +64,24 @@ int main(int argc, char* argv[]) {
         image.resize(width * height * 4);
 
         vector<Sphere> spheres;
-        //spheres.resize(2);
 
         Vector3 plan = Vector3(0, 0, 0);
 
-        Sphere sphere = Sphere(100, Vector3(200, 100, 150));
+        Sphere sphere = Sphere(100, Vector3(200, 100, 500));
         addSphere(&spheres, sphere);
 
-        Sphere sphere2 = Sphere(60, Vector3(400, 350, 200));
+        Sphere sphere2 = Sphere(60, Vector3(200, 220, 100));
         addSphere(&spheres, sphere2);
 
         for (unsigned y = 0; y < width; y++)
         {
             for (unsigned x = 0; x < width; x++) 
             {
-
-                //Vector3 rayon = Vector3(plan.x + x, plan.y + y, plan.z);
                 Rayon rayon = Rayon(Vector3(0, 0, 1), Vector3(plan.x + x, plan.y + y, plan.z));
                 float inter = raySphereIntersect(rayon, spheres);
                 if (inter >= 0)
                 {
-                    color(&image, 4 * width * y + 4 * x, 255 * (inter / 255), 255 * (inter / 255), 255 * (inter / 255), 255);
+                    color(&image, 4 * width * y + 4 * x, 255 - inter, 255 - inter, 255 - inter, 255);
                 }
                 else
                 {
