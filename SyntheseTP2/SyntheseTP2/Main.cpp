@@ -11,12 +11,12 @@ void encodeOneStep(const char* filename, std::vector<unsigned char>& image, unsi
     if (error) std::cout << "encoder error " << error << ": " << lodepng_error_text(error) << std::endl;
 }
 
-void color(vector<unsigned char> img, unsigned char index, float r, float g, float b, float a)
+void color(vector<unsigned char> *img, int index, float r, float g, float b, float a)
 {
-    img[index] = r;
-    img[index + 1] = g;
-    img[index + 2] = b;
-    img[index + 3] = a;
+    img->at(index) = r;
+    img->at(index+1) = g;
+    img->at(index+2) = b;
+    img->at(index+3) = a;
 }
 
 float raySphereIntersect(Vector3 r0, Vector3 rd, vector<Vector3> vs0, vector<float> vsr) {
@@ -45,10 +45,8 @@ float raySphereIntersect(Vector3 r0, Vector3 rd, vector<Vector3> vs0, vector<flo
 }
 
 int main(int argc, char* argv[]) {
-        //NOTE: this sample will overwrite the file or test.png without warning!
         const char* filename = argc > 1 ? argv[1] : "test.png";
 
-        //generate some image
         unsigned width = 512, height = 512;
          
         vector<unsigned char> image;
@@ -81,23 +79,15 @@ int main(int argc, char* argv[]) {
 
                 Vector3 rayon = Vector3(plan.x + x, plan.y + y, plan.z);
                 float inter = raySphereIntersect(rayon, Vector3(0, 0, 1), spheres, rayonsSpheres);
-                //cout << "x " << x << " y " << y << endl;
-                //float inter2 = raySphereIntersect(rayon, Vector3(0, 0, 1), sphere2, rayonSphere2);
                 if (inter >= 0)
                 {
-                    image[4 * width * y + 4 * x + 0] = 255 * (inter / 255);
-                    image[4 * width * y + 4 * x + 1] = 255 * (inter / 255);
-                    image[4 * width * y + 4 * x + 2] = 255 * (inter / 255);
-                    image[4 * width * y + 4 * x + 3] = 255;
+                    color(&image, 4 * width * y + 4 * x, 255 * (inter / 255), 255 * (inter / 255), 255 * (inter / 255), 255);
                 }
                 else
                 {
                     if (inter == -1)
                     {
-                        image[4 * width * y + 4 * x + 0] = 255;
-                        image[4 * width * y + 4 * x + 1] = 0;
-                        image[4 * width * y + 4 * x + 2] = 0;
-                        image[4 * width * y + 4 * x + 3] = 255;
+                        color(&image, 4 * width * y + 4 * x, 255, 0, 0, 255);
                     }
                     else
                         cout << "Erreur: sphere hors du plan" << endl;
