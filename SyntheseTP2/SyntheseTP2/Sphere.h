@@ -25,6 +25,6 @@ public:
 
 	void SetRayon(float _rayon) { rayon = _rayon; }
 
-	Vector3 SetCentre(Vector3 _centre) { centre = _centre; }
+	void SetCentre(Vector3 _centre) { centre = _centre; }
 };
 

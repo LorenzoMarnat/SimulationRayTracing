@@ -1,5 +1,6 @@
 #include "lodepng.h"
 #include "Sphere.h"
+#include "Rayon.h"
 #include <iostream>
 using namespace std;
 
@@ -26,7 +27,7 @@ void addSphere(vector<Sphere>* spheres, Sphere sphere)
     spheres->at(size) = sphere;
 }
 
-float raySphereIntersect(Vector3 r0, Vector3 rd, vector<Sphere> vs0/*, vector<float> vsr*/) {
+float raySphereIntersect(Rayon r, vector<Sphere> vs0/*, vector<float> vsr*/) {
     // - r0: ray origin
     // - rd: normalized ray direction
     // - s0: sphere center
@@ -38,10 +39,9 @@ float raySphereIntersect(Vector3 r0, Vector3 rd, vector<Sphere> vs0/*, vector<fl
     {
         Vector3 s0 = vs0[i].GetCentre();
         float sr = vs0[i].GetRayon();
-
-        float a = rd.dot(rd);
-        Vector3 s0_r0 = r0 - s0;
-        float b = 2.0 * rd.dot(s0_r0);
+        float a = r.GetDirection().dot(r.GetDirection());
+        Vector3 s0_r0 = r.GetOrigine() - s0;
+        float b = 2.0 * r.GetDirection().dot(s0_r0);
         float c = s0_r0.dot(s0_r0) - (sr * sr);
         if (b * b - 4.0 * a * c >= 0.0)
         {
@@ -77,8 +77,9 @@ int main(int argc, char* argv[]) {
             for (unsigned x = 0; x < width; x++) 
             {
 
-                Vector3 rayon = Vector3(plan.x + x, plan.y + y, plan.z);
-                float inter = raySphereIntersect(rayon, Vector3(0, 0, 1), spheres);
+                //Vector3 rayon = Vector3(plan.x + x, plan.y + y, plan.z);
+                Rayon rayon = Rayon(Vector3(0, 0, 1), Vector3(plan.x + x, plan.y + y, plan.z));
+                float inter = raySphereIntersect(rayon, spheres);
                 if (inter >= 0)
                 {
                     color(&image, 4 * width * y + 4 * x, 255 * (inter / 255), 255 * (inter / 255), 255 * (inter / 255), 255);

@@ -1,30 +1,30 @@
 #pragma once
-/*#include "vector3.h"
+#include "vector3.h"
 
 class Rayon
 {
 private:
-	float rayon;
-	Vector3 centre;
+	Vector3 direction;
+	Vector3 origine;
 
 public:
-	Sphere(float _rayon, Vector3 _centre)
+	Rayon(Vector3 _direction, Vector3 _origine)
 	{
-		rayon = _rayon;
-		centre = _centre;
+		direction = _direction;
+		origine = _origine;
 	}
-	Sphere()
+	Rayon()
 	{
-		rayon = 0;
-		centre = Vector3(0, 0, 0);
+		direction = Vector3(0,0,0);
+		origine = Vector3(0, 0, 0);
 	}
 
-	float GetRayon() { return rayon; }
+	Vector3 GetDirection() { return direction; }
 
-	Vector3 GetCentre() { return centre; }
+	Vector3 GetOrigine() { return origine; }
 
-	void SetRayon(float _rayon) { rayon = _rayon; }
+	void SetDirection(Vector3 _direction) { direction = _direction; }
 
-	Vector3 SetCentre(Vector3 _centre) { centre = _centre; }*/
+	void SetOrigine(Vector3 _origine) { origine = _origine; }
 };
 
