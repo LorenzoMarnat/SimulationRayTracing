@@ -1,4 +1,19 @@
 ﻿  Main.cpp
 C:\Users\lmarnat\Documents\GitHub\SimulationLumiere\SyntheseTP2\SyntheseTP2\Main.cpp(23,13): warning C4244: 'initialisation' : conversion de 'double' en 'float', perte possible de données
 C:\Users\lmarnat\Documents\GitHub\SimulationLumiere\SyntheseTP2\SyntheseTP2\Main.cpp(28,47): warning C4244: 'return' : conversion de 'double' en 'float', perte possible de données
+C:\Users\lmarnat\Documents\GitHub\SimulationLumiere\SyntheseTP2\SyntheseTP2\Main.cpp(56,60): warning C4244: '=' : conversion de 'float' en '_Ty', perte possible de données
+          with
+          [
+              _Ty=unsigned char
+          ]
+C:\Users\lmarnat\Documents\GitHub\SimulationLumiere\SyntheseTP2\SyntheseTP2\Main.cpp(57,60): warning C4244: '=' : conversion de 'float' en '_Ty', perte possible de données
+          with
+          [
+              _Ty=unsigned char
+          ]
+C:\Users\lmarnat\Documents\GitHub\SimulationLumiere\SyntheseTP2\SyntheseTP2\Main.cpp(58,60): warning C4244: '=' : conversion de 'float' en '_Ty', perte possible de données
+          with
+          [
+              _Ty=unsigned char
+          ]
   SyntheseTP2.vcxproj -> C:\Users\lmarnat\Documents\GitHub\SimulationLumiere\SyntheseTP2\Debug\SyntheseTP2.exe

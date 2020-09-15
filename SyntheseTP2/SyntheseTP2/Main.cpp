@@ -41,9 +41,10 @@ int main(int argc, char* argv[]) {
 
         Vector3 plan = Vector3(0, 0, 0);
 
-        Vector3 sphere = Vector3(200, 100, 30);
-        float rayonSphere = 20;
+        Vector3 sphere = Vector3(200, 100, 150);
+        float rayonSphere = 100;
 
+        
         for (unsigned y = 0; y < width; y++)
         {
             for (unsigned x = 0; x < width; x++) 
@@ -53,9 +54,9 @@ int main(int argc, char* argv[]) {
 
                 if (inter >= 0)
                 {
-                    image[4 * width * y + 4 * x + 0] = 255;
-                    image[4 * width * y + 4 * x + 1] = 255;
-                    image[4 * width * y + 4 * x + 2] = 255;
+                    image[4 * width * y + 4 * x + 0] = 255 * (inter / 255);
+                    image[4 * width * y + 4 * x + 1] = 255 * (inter / 255);
+                    image[4 * width * y + 4 * x + 2] = 255 * (inter / 255);
                     image[4 * width * y + 4 * x + 3] = 255;
                 }
                 else
@@ -67,17 +68,11 @@ int main(int argc, char* argv[]) {
                         image[4 * width * y + 4 * x + 2] = 0;
                         image[4 * width * y + 4 * x + 3] = 255;
                     }
+                    else
+                        cout << "Erreur: sphere hors du plan" << endl;
                 }
             }
         }
-
-        /*for (unsigned y = 0; y < height; y++)
-            for (unsigned x = 0; x < width; x++) {
-                image[4 * width * y + 4 * x + 0] = (255 * x) / width;
-                image[4 * width * y + 4 * x + 1] = (255 * y) / height;
-                image[4 * width * y + 4 * x + 2] = 0;
-                image[4 * width * y + 4 * x + 3] = 255;
-            }*/
 
         encodeOneStep(filename, image, width, height);
 }
