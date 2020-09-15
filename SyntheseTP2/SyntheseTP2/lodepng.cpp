@@ -1443,7 +1443,6 @@ static size_t searchCodeIndex(const unsigned* array, size_t array_size, size_t v
   /*binary search (only small gain over linear). TODO: use CPU log2 instruction for getting symbols instead*/
   size_t left = 1;
   size_t right = array_size - 1;
-
   while(left <= right) {
     size_t mid = (left + right) >> 1;
     if(array[mid] >= value) right = mid - 1;
