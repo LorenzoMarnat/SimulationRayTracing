@@ -1,6 +1,7 @@
 #include "lodepng.h"
 #include "Sphere.h"
 #include "Rayon.h"
+#include <math.h>
 #include <iostream>
 using namespace std;
 
@@ -27,34 +28,53 @@ void addSphere(vector<Sphere>* spheres, Sphere sphere)
     spheres->at(size) = sphere;
 }
 
-float raySphereIntersect(Rayon r, vector<Sphere> vs0/*, vector<float> vsr*/) {
+bool raySphereIntersect(Rayon r, Sphere s, float *rayon) {
     // - r0: ray origin
     // - rd: normalized ray direction
     // - s0: sphere center
     // - sr: sphere radius
     // - Returns distance from r0 to first intersecion with sphere,
     //   or -1.0 if no intersection.
-    float minR = -1;
-    for (int i = 0; i < vs0.size(); i++)
+    bool inte = false;
+
+    Vector3 s0 = s.GetCentre();
+    float sr = s.GetRayon();
+    float a = r.GetDirection().dot(r.GetDirection());
+    Vector3 s0_r0 = r.GetOrigine() - s0;
+    float b = 2.0 * r.GetDirection().dot(s0_r0);
+    float c = s0_r0.dot(s0_r0) - (sr * sr);
+    if (b * b - 4.0 * a * c >= 0.0)
     {
-        Vector3 s0 = vs0[i].GetCentre();
-        float sr = vs0[i].GetRayon();
-        float a = r.GetDirection().dot(r.GetDirection());
-        Vector3 s0_r0 = r.GetOrigine() - s0;
-        float b = 2.0 * r.GetDirection().dot(s0_r0);
-        float c = s0_r0.dot(s0_r0) - (sr * sr);
-        if (b * b - 4.0 * a * c >= 0.0)
-        {
-            float r = (-b - sqrt((b * b) - 4.0 * a * c)) / (2.0 * a);
-            if (r <= minR || minR == -1)
-                minR = r;
-        }
+        inte = true;
+        *rayon = (-b - sqrt((b * b) - 4.0 * a * c)) / (2.0 * a);
+
     }
-    if (minR >= 0)
-        return minR;
-    return -1.0;
+    return inte;
 }
 
+bool intersectSpheres(Rayon r, vector<Sphere> spheres, float* rayon)
+{
+    bool t = false;
+    for(int i = 0;i< spheres.size();i++)
+    {
+        float rr;
+        bool inteSphere = raySphereIntersect(r, spheres[i], &rr);
+        if (inteSphere)
+        {
+            if (!t)
+            {
+                *rayon = rr;
+            }
+            else
+            {
+                if (rr < *rayon)
+                    *rayon = rr;
+            }
+            t = true;
+        }
+    }
+    return t;
+}
 int main(int argc, char* argv[]) {
         const char* filename = argc > 1 ? argv[1] : "test.png";
 
@@ -67,28 +87,39 @@ int main(int argc, char* argv[]) {
 
         Vector3 plan = Vector3(0, 0, 0);
 
-        Sphere sphere = Sphere(100, Vector3(200, 100, 500));
+        Sphere sphere = Sphere(100, Vector3(200, 100, 200));
         addSphere(&spheres, sphere);
 
-        Sphere sphere2 = Sphere(60, Vector3(200, 220, 100));
+        Sphere sphere2 = Sphere(60, Vector3(200, 300, 200));
         addSphere(&spheres, sphere2);
 
         for (unsigned y = 0; y < width; y++)
         {
             for (unsigned x = 0; x < width; x++) 
             {
+                float minRayon;
+
                 Rayon rayon = Rayon(Vector3(0, 0, 1), Vector3(plan.x + x, plan.y + y, plan.z));
-                float inter = raySphereIntersect(rayon, spheres);
-                if (inter >= 0)
+                bool inter = intersectSpheres(rayon, spheres, &minRayon);
+
+                //cout << inte << endl;
+                //cout << inter << endl;
+                if (inter)
                 {
-                    color(&image, 4 * width * y + 4 * x, 255 - inter, 255 - inter, 255 - inter, 255);
+                    
+                    //bool inte2 = false;
+                    //Rayon lampee = Rayon(Vector3(0, 1, 0), Vector3(plan.x + x, plan.y + y, plan.z + inter + 0.02));
+                    //float lampe = raySphereIntersect(lampee, spheres,&inte2);
+                    //cout << inte2 << endl;
+                    //if (lampe == -1)
+                        color(&image, 4 * width * y + 4 * x, 255 - minRayon, 255 - minRayon, 255 - minRayon, 255);
+                    //else
+                       // color(&image, 4 * width * y + 4 * x, 255, 0, 0, 255);
                 }
                 else
                 {
-                    if (inter == -1)
-                    {
-                        color(&image, 4 * width * y + 4 * x, 255, 0, 0, 255);
-                    }
+                    //if(!inte)
+                        color(&image, 4 * width * y + 4 * x, 0, 0, 127, 255);
                 }
             }
         }

@@ -1,10 +1,5 @@
 ﻿  Main.cpp
-C:\Users\lmarnat\Documents\GitHub\SimulationLumiere\SyntheseTP2\SyntheseTP2\Main.cpp(17,22): warning C4244: '=' : conversion de 'float' en '_Ty', perte possible de données
-          with
-          [
-              _Ty=unsigned char
-          ]
-C:\Users\lmarnat\Documents\GitHub\SimulationLumiere\SyntheseTP2\SyntheseTP2\Main.cpp(18,24): warning C4244: '=' : conversion de 'float' en '_Ty', perte possible de données
+C:\Users\lmarnat\Documents\GitHub\SimulationLumiere\SyntheseTP2\SyntheseTP2\Main.cpp(18,22): warning C4244: '=' : conversion de 'float' en '_Ty', perte possible de données
           with
           [
               _Ty=unsigned char
@@ -19,7 +14,12 @@ C:\Users\lmarnat\Documents\GitHub\SimulationLumiere\SyntheseTP2\SyntheseTP2\Main
           [
               _Ty=unsigned char
           ]
-C:\Users\lmarnat\Documents\GitHub\SimulationLumiere\SyntheseTP2\SyntheseTP2\Main.cpp(38,23): warning C4018: '<' : incompatibilité signed/unsigned
-C:\Users\lmarnat\Documents\GitHub\SimulationLumiere\SyntheseTP2\SyntheseTP2\Main.cpp(44,17): warning C4244: 'initialisation' : conversion de 'double' en 'float', perte possible de données
-C:\Users\lmarnat\Documents\GitHub\SimulationLumiere\SyntheseTP2\SyntheseTP2\Main.cpp(48,21): warning C4244: 'initialisation' : conversion de 'double' en 'float', perte possible de données
+C:\Users\lmarnat\Documents\GitHub\SimulationLumiere\SyntheseTP2\SyntheseTP2\Main.cpp(21,24): warning C4244: '=' : conversion de 'float' en '_Ty', perte possible de données
+          with
+          [
+              _Ty=unsigned char
+          ]
+C:\Users\lmarnat\Documents\GitHub\SimulationLumiere\SyntheseTP2\SyntheseTP2\Main.cpp(44,13): warning C4244: 'initialisation' : conversion de 'double' en 'float', perte possible de données
+C:\Users\lmarnat\Documents\GitHub\SimulationLumiere\SyntheseTP2\SyntheseTP2\Main.cpp(49,53): warning C4244: '=' : conversion de 'double' en 'float', perte possible de données
+C:\Users\lmarnat\Documents\GitHub\SimulationLumiere\SyntheseTP2\SyntheseTP2\Main.cpp(58,20): warning C4018: '<' : incompatibilité signed/unsigned
   SyntheseTP2.vcxproj -> C:\Users\lmarnat\Documents\GitHub\SimulationLumiere\SyntheseTP2\Debug\SyntheseTP2.exe
