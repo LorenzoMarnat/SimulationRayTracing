@@ -7,13 +7,23 @@ private:
     Vector3 position;
 
 public:
-	Lampe(Vector3 _direction, Vector3 _origine, Vector3 _position) : Rayon(_direction,_origine)
+	Lampe(Vector3 _position, Vector3 _origine, Couleur _couleur)
 	{
+		Vector3 _direction = _position - _origine;
+		_direction.normalize();
 		position = _position;
+		origine = _origine;
+		direction = _direction;
+		couleur = _couleur;
 	}
-	Lampe(Vector3 _direction, Vector3 _origine, Vector3 _position, Couleur _couleur) : Rayon(_direction, _origine, _couleur)
+	Lampe(Vector3 _position, Vector3 _origine)
 	{
+		Vector3 _direction = _position - _origine;
+		_direction.normalize();
 		position = _position;
+		origine = _origine;
+		direction = _direction;
+		couleur = Couleur();
 	}
 	Lampe() : Rayon()
 	{

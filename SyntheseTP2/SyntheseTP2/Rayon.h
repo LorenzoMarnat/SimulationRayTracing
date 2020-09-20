@@ -4,7 +4,7 @@
 
 class Rayon
 {
-private:
+protected:
 	Vector3 direction;
 	Vector3 origine;
 	Couleur couleur;

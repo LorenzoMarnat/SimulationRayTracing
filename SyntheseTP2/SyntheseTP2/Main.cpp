@@ -105,7 +105,7 @@ int main(int argc, char* argv[]) {
                 if (inter)
                 {
                     float minDist;
-                    Lampe lampee = Lampe(Vector3(0, 1, 0), Vector3(x,y,minDistance-0.02),Vector3(20,30,10));
+                    Lampe lampee = Lampe(Vector3(1000, 200, 200), Vector3(x,y,minDistance-0.02),Couleur(255,255,255));
                     //cout << "Direction :" << lampee.GetDirection().x << " " << lampee.GetDirection().y << " " << lampee.GetDirection().z << endl;
                     //cout << "Origine :" << lampee.GetOrigine().x << " " << lampee.GetOrigine().y << " " << lampee.GetOrigine().z << endl;
                     //cout << "Position :" << lampee.GetPosition().x << " " << lampee.GetPosition().y << " " << lampee.GetPosition().z << endl;
