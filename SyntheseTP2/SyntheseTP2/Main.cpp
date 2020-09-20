@@ -1,6 +1,6 @@
 #include "lodepng.h"
 #include "Sphere.h"
-#include "Rayon.h"
+#include "Lampe.h"
 #include <math.h>
 #include <iostream>
 using namespace std;
@@ -35,7 +35,7 @@ bool raySphereIntersect(Rayon r, Sphere s, float *distance) {
     // - sr: sphere radius
     // - Returns distance from r0 to first intersecion with sphere,
     //   or -1.0 if no intersection.
-    bool inte = false;
+    bool intersect = false;
 
     Vector3 s0 = s.GetCentre();
     float sr = s.GetRayon();
@@ -47,33 +47,33 @@ bool raySphereIntersect(Rayon r, Sphere s, float *distance) {
     {
         *distance = (-b - sqrt((b * b) - 4.0 * a * c)) / (2.0 * a);
         if(*distance >= 0)
-            inte = true;
+            intersect = true;
     }
-    return inte;
+    return intersect;
 }
 
 bool intersectSpheres(Rayon r, vector<Sphere> spheres, float* distance)
 {
-    bool t = false;
+    bool intersect = false;
     for(int i = 0;i< spheres.size();i++)
     {
-        float rr;
-        bool inteSphere = raySphereIntersect(r, spheres[i], &rr);
+        float minDistance;
+        bool inteSphere = raySphereIntersect(r, spheres[i], &minDistance);
         if (inteSphere)
         {
-            if (!t)
+            if (!intersect)
             {
-                *distance = rr;
+                *distance = minDistance;
             }
             else
             {
-                if (rr < *distance)
-                    *distance = rr;
+                if (minDistance < *distance)
+                    *distance = minDistance;
             }
-            t = true;
+            intersect = true;
         }
     }
-    return t;
+    return intersect;
 }
 int main(int argc, char* argv[]) {
         const char* filename = argc > 1 ? argv[1] : "test.png";
@@ -92,7 +92,7 @@ int main(int argc, char* argv[]) {
 
         Sphere sphere2 = Sphere(60, Vector3(200, 300, 200));
         addSphere(&spheres, sphere2);
-
+        
         for (unsigned y = 0; y < width; y++)
         {
             for (unsigned x = 0; x < width; x++) 
@@ -104,12 +104,11 @@ int main(int argc, char* argv[]) {
 
                 if (inter)
                 {
-                   // 
                     float minDist;
                     Rayon lampee = Rayon(Vector3(0, 1, 0), Vector3(x,y,minDistance-0.02));
-                    bool inter2 = intersectSpheres(lampee, spheres, &minDist);
-                    //cout << mnRayon << endl;
-                    if (!inter2)
+                    inter = intersectSpheres(lampee, spheres, &minDist);
+
+                    if (!inter)
                         color(&image, 4 * width * y + 4 * x, rayon.GetCouleur().red - minDistance, rayon.GetCouleur().green - minDistance, rayon.GetCouleur().blue - minDistance, 255);
                     else
                         color(&image, 4 * width * y + 4 * x, 25, 25, 25, 255);

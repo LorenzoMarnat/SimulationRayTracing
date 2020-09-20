@@ -26,6 +26,7 @@ public:
 	{
 		direction = Vector3(0,0,0);
 		origine = Vector3(0, 0, 0);
+		couleur = Couleur();
 	}
 
 	Vector3 GetDirection() { return direction; }
