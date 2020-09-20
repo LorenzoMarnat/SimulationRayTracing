@@ -32,8 +32,12 @@ public:
 
 	Vector3 GetOrigine() { return origine; }
 
+	Couleur GetCouleur() { return couleur; }
+
 	void SetDirection(Vector3 _direction) { direction = _direction; }
 
 	void SetOrigine(Vector3 _origine) { origine = _origine; }
+
+	void SetCouleur(Couleur _couleur) { couleur = _couleur; }
 };
 

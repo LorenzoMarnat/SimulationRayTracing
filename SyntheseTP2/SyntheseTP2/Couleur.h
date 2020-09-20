@@ -70,5 +70,12 @@ public:
 		blue = 255;
 		alpha = 255;
 	}
+	void operator=(Couleur c)
+	{
+		red = c.red;
+		green = c.green;
+		blue = c.blue;
+		alpha = c.alpha;
+	}
 };
 

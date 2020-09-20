@@ -110,7 +110,7 @@ int main(int argc, char* argv[]) {
                     bool inter2 = intersectSpheres(lampee, spheres, &minDist);
                     //cout << mnRayon << endl;
                     if (!inter2)
-                        color(&image, 4 * width * y + 4 * x, 255 - minDistance, 255 - minDistance, 255 - minDistance, 255);
+                        color(&image, 4 * width * y + 4 * x, rayon.GetCouleur().red - minDistance, rayon.GetCouleur().green - minDistance, rayon.GetCouleur().blue - minDistance, 255);
                     else
                         color(&image, 4 * width * y + 4 * x, 25, 25, 25, 255);
                 }
