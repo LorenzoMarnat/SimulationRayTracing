@@ -1,17 +1,26 @@
 #pragma once
 #include "vector3.h"
+#include "Couleur.h"
 
 class Rayon
 {
 private:
 	Vector3 direction;
 	Vector3 origine;
+	Couleur couleur;
 
 public:
 	Rayon(Vector3 _direction, Vector3 _origine)
 	{
 		direction = _direction;
 		origine = _origine;
+		couleur = Couleur();
+	}
+	Rayon(Vector3 _direction, Vector3 _origine, Couleur _couleur)
+	{
+		direction = _direction;
+		origine = _origine;
+		couleur = Couleur(_couleur.red,_couleur.green,_couleur.blue,_couleur.alpha);
 	}
 	Rayon()
 	{
