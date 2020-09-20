@@ -163,6 +163,10 @@ int main(int argc, char* argv[]) {
                     lampe2.intersection = intersectSpheres((Rayon)lampe2, spheres, &distanceLampe);
                     addLampe(&lampes, lampe2);
 
+                    Lampe lampe3 = Lampe(Vector3(200, -100, 200), Vector3(x, y, minDistance - 0.02), Couleur(255, 0, 0));
+                    lampe3.intersection = intersectSpheres((Rayon)lampe3, spheres, &distanceLampe);
+                    addLampe(&lampes, lampe3);
+
                     bool noIntersection = true;
                     for (Lampe lampe : lampes)
                     {
@@ -179,7 +183,7 @@ int main(int argc, char* argv[]) {
                 }
                 else
                 {
-                    color(&image, 4 * width * y + 4 * x, Couleur(127,0,0),0);
+                    color(&image, 4 * width * y + 4 * x, Couleur(),0);
                 }
             }
         }
