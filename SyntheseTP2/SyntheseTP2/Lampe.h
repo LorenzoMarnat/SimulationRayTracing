@@ -8,6 +8,8 @@ private:
 	float distance;
 
 public:
+	bool intersection;
+
 	Lampe(Vector3 _position, Vector3 _origine, Couleur _couleur)
 	{
 		Vector3 _direction = _position - _origine;

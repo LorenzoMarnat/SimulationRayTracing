@@ -15,20 +15,47 @@ void encodeOneStep(const char* filename, std::vector<unsigned char>& image, unsi
 
 void color(vector<unsigned char> *img, int index, Couleur couleur, float distance)
 {
-    if (couleur.red - ((50 * distance) / 255) < 0)
-        img->at(index) = 0;
+    float red = couleur.red - ((50 * distance) / 255);
+    if (red < 0)
+        red = 0;
+    if (red > 255)
+        red = 255;
+    if (img->at(index) == 256)
+    {
+        img->at(index) = red;
+    }
     else
-        img->at(index) = couleur.red - ((50*distance)/255);
+    {
+        img->at(index) = (img->at(index) + red) / 2;
+    }
 
-    if (couleur.green - ((50 * distance) / 255) < 0)
-        img->at(index+1) = 0;
+    float green = couleur.green - ((50 * distance) / 255);
+    if (green < 0)
+        green = 0;
+    if (green > 255)
+        green = 255;
+    if (img->at(index+1) == 256)
+    {
+        img->at(index+1) = green;
+    }
     else
-        img->at(index+1) = couleur.green - ((50*distance)/255);
+    {
+        img->at(index+1) = (img->at(index+1) + green) / 2;
+    }
 
-    if (couleur.blue - ((50 * distance) / 255) < 0)
-        img->at(index+2) = 0;
+    float blue = couleur.blue - ((50 * distance) / 255);
+    if (blue < 0)
+        blue = 0;
+    if (blue > 255)
+        blue = 255;
+    if (img->at(index+2) == 256)
+    {
+        img->at(index+2) = blue;
+    }
     else
-        img->at(index+2) = couleur.blue - ((50*distance)/255);
+    {
+        img->at(index+2) = (img->at(index+2) + blue) / 2;
+    }
 
     img->at(index+3) = couleur.alpha;
 }
@@ -40,6 +67,12 @@ void addSphere(vector<Sphere>* spheres, Sphere sphere)
     spheres->at(size) = sphere;
 }
 
+void addLampe(vector<Lampe>* lampes, Lampe lampe)
+{
+    int size = lampes->size();
+    lampes->resize(size + 1);
+    lampes->at(size) = lampe;
+}
 bool raySphereIntersect(Rayon r, Sphere s, float *distance) {
     // - r0: ray origin
     // - rd: normalized ray direction
@@ -95,6 +128,9 @@ int main(int argc, char* argv[]) {
         vector<unsigned char> image;
         image.resize(width * height * 4);
 
+        for(int i=0;i< width * height * 4;i++)
+            image[i] = 256;
+
         vector<Sphere> spheres;
 
         Vector3 plan = Vector3(0, 0, 0);
@@ -116,17 +152,30 @@ int main(int argc, char* argv[]) {
 
                 if (inter)
                 {
-                    Lampe lampe = Lampe(Vector3(1000, 200, 200), Vector3(x,y,minDistance-0.02),Couleur(0,255,255));
-                    //cout << "Direction :" << lampe.GetDirection().x << " " << lampe.GetDirection().y << " " << lampe.GetDirection().z << endl;
-                    //cout << "Origine :" << lampe.GetOrigine().x << " " << lampe.GetOrigine().y << " " << lampe.GetOrigine().z << endl;
-                    //cout << "Position :" << lampe.GetPosition().x << " " << lampe.GetPosition().y << " " << lampe.GetPosition().z << endl;
-                    //cout << "Couleur :" << lampe.GetCouleur().red << " " << lampe.GetCouleur().green << " " << lampe.GetCouleur().blue << endl;
-                    inter = intersectSpheres((Rayon)lampe, spheres, &minDistance);
+                    vector<Lampe> lampes;
+                    float distanceLampe;
+                    
+                    Lampe lampe1 = Lampe(Vector3(300, 220, 200), Vector3(x,y,minDistance-0.02),Couleur(0,0,255));
+                    lampe1.intersection = intersectSpheres((Rayon)lampe1, spheres, &distanceLampe);
+                    addLampe(&lampes, lampe1);
 
-                    if (!inter)
-                        color(&image, 4 * width * y + 4 * x, lampe.GetCouleur(),lampe.GetDistance());
-                    else
-                        color(&image, 4 * width * y + 4 * x, Couleur(25,25,25),0);
+                    Lampe lampe2 = Lampe(Vector3(-300, 220, 200), Vector3(x, y, minDistance - 0.02), Couleur(0, 255, 0));
+                    lampe2.intersection = intersectSpheres((Rayon)lampe2, spheres, &distanceLampe);
+                    addLampe(&lampes, lampe2);
+
+                    bool noIntersection = true;
+                    for (Lampe lampe : lampes)
+                    {
+                        if (!lampe.intersection)
+                        {
+                            color(&image, 4 * width * y + 4 * x, lampe.GetCouleur(), lampe.GetDistance());
+                            noIntersection = false;
+                        }
+                    }
+                    if (noIntersection)
+                    {
+                        color(&image, 4 * width * y + 4 * x, Couleur(25, 25, 25), 0);
+                    }
                 }
                 else
                 {
