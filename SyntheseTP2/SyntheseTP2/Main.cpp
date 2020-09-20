@@ -13,12 +13,12 @@ void encodeOneStep(const char* filename, std::vector<unsigned char>& image, unsi
     if (error) std::cout << "encoder error " << error << ": " << lodepng_error_text(error) << std::endl;
 }
 
-void color(vector<unsigned char> *img, int index, float r, float g, float b, float a)
+void color(vector<unsigned char> *img, int index, Couleur couleur, float distance)
 {
-    img->at(index) = r;
-    img->at(index+1) = g;
-    img->at(index+2) = b;
-    img->at(index+3) = a;
+    img->at(index) = couleur.red - distance;
+    img->at(index+1) = couleur.green - distance;
+    img->at(index+2) = couleur.blue - distance;
+    img->at(index+3) = couleur.alpha;
 }
 
 void addSphere(vector<Sphere>* spheres, Sphere sphere)
@@ -109,13 +109,13 @@ int main(int argc, char* argv[]) {
                     inter = intersectSpheres(lampee, spheres, &minDist);
 
                     if (!inter)
-                        color(&image, 4 * width * y + 4 * x, rayon.GetCouleur().red - minDistance, rayon.GetCouleur().green - minDistance, rayon.GetCouleur().blue - minDistance, 255);
+                        color(&image, 4 * width * y + 4 * x, rayon.GetCouleur(),minDistance);
                     else
-                        color(&image, 4 * width * y + 4 * x, 25, 25, 25, 255);
+                        color(&image, 4 * width * y + 4 * x, Couleur(25,25,25),0);
                 }
                 else
                 {
-                    color(&image, 4 * width * y + 4 * x, 0, 0, 127, 255);
+                    color(&image, 4 * width * y + 4 * x, Couleur(127,0,0),0);
                 }
             }
         }
