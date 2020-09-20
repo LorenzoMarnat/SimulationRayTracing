@@ -7,19 +7,16 @@ private:
     Vector3 position;
 
 public:
-	Lampe(Vector3 _direction, Vector3 _origine, Vector3 _position)
+	Lampe(Vector3 _direction, Vector3 _origine, Vector3 _position) : Rayon(_direction,_origine)
 	{
-		Rayon(_direction, _origine);
 		position = _position;
 	}
-	Lampe(Vector3 _direction, Vector3 _origine, Vector3 _position, Couleur _couleur)
+	Lampe(Vector3 _direction, Vector3 _origine, Vector3 _position, Couleur _couleur) : Rayon(_direction, _origine, _couleur)
 	{
-		Rayon(_direction, _origine,_couleur);
 		position = _position;
 	}
-	Lampe()
+	Lampe() : Rayon()
 	{
-		Rayon();
 		position = Vector3(0, 0, 0);
 	}
 

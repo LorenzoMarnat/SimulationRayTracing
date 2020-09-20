@@ -105,8 +105,11 @@ int main(int argc, char* argv[]) {
                 if (inter)
                 {
                     float minDist;
-                    Rayon lampee = Rayon(Vector3(0, 1, 0), Vector3(x,y,minDistance-0.02));
-                    inter = intersectSpheres(lampee, spheres, &minDist);
+                    Lampe lampee = Lampe(Vector3(0, 1, 0), Vector3(x,y,minDistance-0.02),Vector3(20,30,10));
+                    //cout << "Direction :" << lampee.GetDirection().x << " " << lampee.GetDirection().y << " " << lampee.GetDirection().z << endl;
+                    //cout << "Origine :" << lampee.GetOrigine().x << " " << lampee.GetOrigine().y << " " << lampee.GetOrigine().z << endl;
+                    //cout << "Position :" << lampee.GetPosition().x << " " << lampee.GetPosition().y << " " << lampee.GetPosition().z << endl;
+                    inter = intersectSpheres((Rayon)lampee, spheres, &minDist);
 
                     if (!inter)
                         color(&image, 4 * width * y + 4 * x, rayon.GetCouleur(),minDistance);
