@@ -5,11 +5,13 @@ class Lampe :
 {
 private:
     Vector3 position;
+	float distance;
 
 public:
 	Lampe(Vector3 _position, Vector3 _origine, Couleur _couleur)
 	{
 		Vector3 _direction = _position - _origine;
+		distance = _direction.length();
 		_direction.normalize();
 		position = _position;
 		origine = _origine;
@@ -19,6 +21,7 @@ public:
 	Lampe(Vector3 _position, Vector3 _origine)
 	{
 		Vector3 _direction = _position - _origine;
+		distance = _direction.length();
 		_direction.normalize();
 		position = _position;
 		origine = _origine;
@@ -28,10 +31,12 @@ public:
 	Lampe() : Rayon()
 	{
 		position = Vector3(0, 0, 0);
+		distance = 0;
 	}
 
     Vector3 GetPosition() { return position; }
 
-    void SetPosition(Vector3 _position) { position = _position; }
+	float GetDistance() { return distance; }
+
 };
 

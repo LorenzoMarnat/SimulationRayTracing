@@ -15,9 +15,21 @@ void encodeOneStep(const char* filename, std::vector<unsigned char>& image, unsi
 
 void color(vector<unsigned char> *img, int index, Couleur couleur, float distance)
 {
-    img->at(index) = couleur.red - distance;
-    img->at(index+1) = couleur.green - distance;
-    img->at(index+2) = couleur.blue - distance;
+    if (couleur.red - ((50 * distance) / 255) < 0)
+        img->at(index) = 0;
+    else
+        img->at(index) = couleur.red - ((50*distance)/255);
+
+    if (couleur.green - ((50 * distance) / 255) < 0)
+        img->at(index+1) = 0;
+    else
+        img->at(index+1) = couleur.green - ((50*distance)/255);
+
+    if (couleur.blue - ((50 * distance) / 255) < 0)
+        img->at(index+2) = 0;
+    else
+        img->at(index+2) = couleur.blue - ((50*distance)/255);
+
     img->at(index+3) = couleur.alpha;
 }
 
@@ -104,15 +116,15 @@ int main(int argc, char* argv[]) {
 
                 if (inter)
                 {
-                    float minDist;
-                    Lampe lampee = Lampe(Vector3(1000, 200, 200), Vector3(x,y,minDistance-0.02),Couleur(255,255,255));
-                    //cout << "Direction :" << lampee.GetDirection().x << " " << lampee.GetDirection().y << " " << lampee.GetDirection().z << endl;
-                    //cout << "Origine :" << lampee.GetOrigine().x << " " << lampee.GetOrigine().y << " " << lampee.GetOrigine().z << endl;
-                    //cout << "Position :" << lampee.GetPosition().x << " " << lampee.GetPosition().y << " " << lampee.GetPosition().z << endl;
-                    inter = intersectSpheres((Rayon)lampee, spheres, &minDist);
+                    Lampe lampe = Lampe(Vector3(1000, 200, 200), Vector3(x,y,minDistance-0.02),Couleur(0,255,255));
+                    //cout << "Direction :" << lampe.GetDirection().x << " " << lampe.GetDirection().y << " " << lampe.GetDirection().z << endl;
+                    //cout << "Origine :" << lampe.GetOrigine().x << " " << lampe.GetOrigine().y << " " << lampe.GetOrigine().z << endl;
+                    //cout << "Position :" << lampe.GetPosition().x << " " << lampe.GetPosition().y << " " << lampe.GetPosition().z << endl;
+                    //cout << "Couleur :" << lampe.GetCouleur().red << " " << lampe.GetCouleur().green << " " << lampe.GetCouleur().blue << endl;
+                    inter = intersectSpheres((Rayon)lampe, spheres, &minDistance);
 
                     if (!inter)
-                        color(&image, 4 * width * y + 4 * x, rayon.GetCouleur(),minDistance);
+                        color(&image, 4 * width * y + 4 * x, lampe.GetCouleur(),lampe.GetDistance());
                     else
                         color(&image, 4 * width * y + 4 * x, Couleur(25,25,25),0);
                 }
@@ -124,4 +136,5 @@ int main(int argc, char* argv[]) {
         }
 
         encodeOneStep(filename, image, width, height);
+
 }
