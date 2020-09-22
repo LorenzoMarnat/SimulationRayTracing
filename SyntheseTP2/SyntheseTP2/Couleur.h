@@ -46,7 +46,17 @@ public:
 	float red;
 	float green;
 	float alpha;
+	float intensity;
 
+	Couleur(float _red, float _green, float _blue, float _alpha, float _intensity)
+	{
+		CheckColors(&_red, &_green, &_blue, &_alpha);
+		red = _red;
+		green = _green;
+		blue = _blue;
+		alpha = _alpha;
+		intensity = _intensity;
+	}
 	Couleur(float _red, float _green, float _blue, float _alpha)
 	{
 		CheckColors(&_red, &_green, &_blue, &_alpha);
@@ -54,6 +64,7 @@ public:
 		green = _green;
 		blue = _blue;
 		alpha = _alpha;
+		intensity = 1;
 	}
 	Couleur(float _red, float _green, float _blue)
 	{
@@ -62,6 +73,7 @@ public:
 		green = _green;
 		blue = _blue;
 		alpha = 255;
+		intensity = 1;
 	}
 	Couleur()
 	{
@@ -69,6 +81,7 @@ public:
 		green = 255;
 		blue = 255;
 		alpha = 255;
+		intensity = 1;
 	}
 	void operator=(Couleur c)
 	{
@@ -76,6 +89,7 @@ public:
 		green = c.green;
 		blue = c.blue;
 		alpha = c.alpha;
+		intensity = c.intensity;
 	}
 };
 

@@ -1,5 +1,6 @@
 #pragma once
 #include "vector3.h"
+#include "Couleur.h"
 
 class Sphere
 {
@@ -8,15 +9,19 @@ private:
 	Vector3 centre;
 
 public:
-	Sphere(float _rayon, Vector3 _centre)
+	Couleur albedo;
+
+	Sphere(float _rayon, Vector3 _centre,Couleur _couleur)
 	{
 		rayon = _rayon;
 		centre = _centre;
+		albedo = _couleur;
 	}
 	Sphere()
 	{
 		rayon = 0;
 		centre = Vector3(0, 0, 0);
+		albedo = Couleur(1,1,1);
 	}
 
 	float GetRayon() { return rayon; }

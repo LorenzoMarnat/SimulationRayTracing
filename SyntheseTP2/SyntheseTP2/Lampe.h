@@ -8,7 +8,7 @@ private:
 	float distance;
 
 public:
-	bool intersection;
+	int intersection;
 
 	Lampe(Vector3 _position, Vector3 _origine, Couleur _couleur)
 	{
@@ -19,6 +19,7 @@ public:
 		origine = _origine;
 		direction = _direction;
 		couleur = _couleur;
+		intersection = 0;
 	}
 	Lampe(Vector3 _position, Vector3 _origine)
 	{
@@ -29,11 +30,13 @@ public:
 		origine = _origine;
 		direction = _direction;
 		couleur = Couleur();
+		intersection = 0;
 	}
 	Lampe() : Rayon()
 	{
 		position = Vector3(0, 0, 0);
 		distance = 0;
+		intersection = 0;
 	}
 
     Vector3 GetPosition() { return position; }
