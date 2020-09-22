@@ -55,9 +55,8 @@ public:
 	{
 		Vector3 _direction = position - _origine;
 		distance = _direction.length();
-		_direction.normalize();
+		direction = _direction.normalize();
 		origine = _origine;
-		direction = _direction;
 	}
 
 };

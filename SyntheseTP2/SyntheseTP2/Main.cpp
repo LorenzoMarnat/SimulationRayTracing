@@ -103,6 +103,7 @@ int intersectSpheres(Rayon r, vector<Sphere> spheres, float* distance)
                 if (minDistance < *distance)
                 {
                     intersect = i;
+                    
                     *distance = minDistance;
                 }
             }
@@ -120,8 +121,7 @@ void intersectLamps(Vector3 intersection,vector<Lampe> lamps,vector<Sphere> sphe
 
         float distanceLampe;
         int idSphere = intersectSpheres((Rayon)lampe, spheres, &distanceLampe);
-
-        if (idSphere == -1)
+        if (idSphere == -1 || distanceLampe > lampe.GetDistance())
         {
             Couleur surface = colorOnSurface(lampe, spheres[intersectSphere]);
             color(image, index, surface);
@@ -147,33 +147,33 @@ int main(int argc, char* argv[]) {
             image[i] = 0;
 
         Vector3 plan = Vector3(0, 0, 0);
-        Camera camera = Camera(width, height, 500, Vector3(0, 0, 0));
+        Camera camera = Camera(width, height, 512, Vector3(0, 0, 0));
 
         vector<Sphere> spheres;
 
-        Sphere sphere = Sphere(100, Vector3(200, 100, 250),Couleur(1,0,0));
+        Sphere rouge = Sphere(100, Vector3(200, 0, 350),Couleur(1,0,0));
 
-        Sphere sphere2 = Sphere(100, Vector3(200, 300, 350),Couleur(0,0,1));
+        Sphere bleu = Sphere(100, Vector3(200, 450, 250),Couleur(0,0,1));
 
-        Sphere sphere3 = Sphere(100, Vector3(450, 200, 150), Couleur(0, 1, 0));
+        Sphere vert = Sphere(100, Vector3(450, 200, 150), Couleur(0, 1, 0));
 
-        Sphere sphere4 = Sphere(100, Vector3(300, 450, 200), Couleur(0, 1, 1));
+        Sphere cyan = Sphere(100, Vector3(450, 450, 200), Couleur(0, 1, 1));
 
-        Sphere sphere5 = Sphere(100, Vector3(70, 400, 300), Couleur(1, 1, 0));
+        Sphere jaune = Sphere(100, Vector3(0, 300, 300), Couleur(1, 1, 0));
 
-        addSphere(&spheres, sphere);
-        addSphere(&spheres, sphere2);
-        addSphere(&spheres, sphere3);
-        addSphere(&spheres, sphere4);
-        addSphere(&spheres, sphere5);
+        addSphere(&spheres, rouge);
+        addSphere(&spheres, bleu);
+        addSphere(&spheres, vert);
+        addSphere(&spheres, cyan);
+        addSphere(&spheres, jaune);
 
         vector<Lampe> lampes;
 
-        Lampe lampe1 = Lampe(Vector3(250, 250, 50), 300000);
+        Lampe lampe1 = Lampe(Vector3(200, 250, 250), 30000000);
 
-        Lampe lampe2 = Lampe(Vector3(-300, 220, 200), 600000);
+        Lampe lampe2 = Lampe(Vector3(-300, 220, 200), 60000000);
 
-        Lampe lampe3 = Lampe(Vector3(200, -100, 200), 300000);
+        Lampe lampe3 = Lampe(Vector3(200, -100, 200), 30000000);
 
         addLampe(&lampes, lampe1);
         addLampe(&lampes, lampe2);
@@ -189,10 +189,9 @@ int main(int argc, char* argv[]) {
                 Rayon rayon = Rayon(normale,point);
                 //Rayon rayon = Rayon(Vector3(0, 0, 1), Vector3(plan.x + x, plan.y + y, plan.z));
                 int sphereIntersect = intersectSpheres(rayon, spheres, &minDistance);
-
                 if (sphereIntersect != -1)
                 {
-                    Vector3 pointIntersection = Vector3(minDistance*normale.x+x+camera.plan.x, minDistance * normale.y+y + camera.plan.z, minDistance * normale.z + camera.plan.z -0.02);
+                    Vector3 pointIntersection = Vector3(minDistance*normale.x + x + camera.plan.x, minDistance * normale.y + y + camera.plan.z, minDistance * normale.z + camera.plan.z -0.02);
                     //Vector3 pointIntersection = Vector3(x, y, minDistance - 0.02);
                     intersectLamps(pointIntersection, lampes, spheres, sphereIntersect, &image, 4 * width * y + 4 * x);
                 }
