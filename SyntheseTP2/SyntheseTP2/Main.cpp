@@ -103,7 +103,6 @@ int intersectSpheres(Rayon r, vector<Sphere> spheres, float* distance)
                 if (minDistance < *distance)
                 {
                     intersect = i;
-                    
                     *distance = minDistance;
                 }
             }
@@ -146,7 +145,6 @@ int main(int argc, char* argv[]) {
         for(int i=0;i< width * height * 4;i++)
             image[i] = 0;
 
-        Vector3 plan = Vector3(0, 0, 0);
         Camera camera = Camera(width, height, 512, Vector3(0, 0, 0));
 
         vector<Sphere> spheres;
@@ -184,15 +182,15 @@ int main(int argc, char* argv[]) {
             for (unsigned x = 0; x < width; x++) 
             {
                 float minDistance;
+
                 Vector3 point = Vector3(camera.plan.x + x, camera.plan.y + y, camera.plan.z);
                 Vector3 normale = camera.Normale(point);
                 Rayon rayon = Rayon(normale,point);
-                //Rayon rayon = Rayon(Vector3(0, 0, 1), Vector3(plan.x + x, plan.y + y, plan.z));
+
                 int sphereIntersect = intersectSpheres(rayon, spheres, &minDistance);
                 if (sphereIntersect != -1)
                 {
                     Vector3 pointIntersection = Vector3(minDistance*normale.x + x + camera.plan.x, minDistance * normale.y + y + camera.plan.z, minDistance * normale.z + camera.plan.z -0.02);
-                    //Vector3 pointIntersection = Vector3(x, y, minDistance - 0.02);
                     intersectLamps(pointIntersection, lampes, spheres, sphereIntersect, &image, 4 * width * y + 4 * x);
                 }
                 else
