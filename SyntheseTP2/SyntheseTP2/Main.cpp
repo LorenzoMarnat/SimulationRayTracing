@@ -3,6 +3,9 @@
 #include "Lampe.h"
 #include <math.h>
 #include <iostream>
+
+#define PI 3.141593
+
 using namespace std;
 
 void encodeOneStep(const char* filename, std::vector<unsigned char>& image, unsigned width, unsigned height) {
@@ -36,17 +39,18 @@ void color(vector<unsigned char>* img, int index, Couleur couleur)
 
 Couleur colorOnSurface(Lampe lampe, Sphere sphere)
 {
-    float distanceCarre = sqrt(lampe.GetDistance());
+    float distanceCarre = (lampe.GetDistance())* (lampe.GetDistance());
 
     Vector3 normaleSurface = lampe.GetOrigine() - sphere.GetCentre();
     normaleSurface = normaleSurface.normalize();
 
     double scalaire = abs(normaleSurface.dot(lampe.GetDirection()));
 
-    float intensity = (lampe.intersection * scalaire * lampe.intensity) / (2 * acos(0.0) * distanceCarre);
+    float intensity = (scalaire * lampe.intensity) / (PI * distanceCarre);
 
     return Couleur(sphere.albedo.red * intensity, sphere.albedo.green * intensity, sphere.albedo.blue * intensity);
 }
+
 void addSphere(vector<Sphere>* spheres, Sphere sphere)
 {
     int size = spheres->size();
@@ -110,6 +114,7 @@ int intersectSpheres(Rayon r, vector<Sphere> spheres, float* distance)
     }
     return intersect;
 }
+
 int main(int argc, char* argv[]) {
         const char* filename = argc > 1 ? argv[1] : "test.png";
 
@@ -133,13 +138,13 @@ int main(int argc, char* argv[]) {
 
         vector<Lampe> lampes;
 
-        Lampe lampe1 = Lampe(Vector3(300, 220, 200), 20000);
+        Lampe lampe1 = Lampe(Vector3(300, 220, 100), 1000000);
         addLampe(&lampes, lampe1);
 
-        Lampe lampe2 = Lampe(Vector3(-300, 220, 200), 50);
+        Lampe lampe2 = Lampe(Vector3(-300, 220, 200), 800000);
         addLampe(&lampes, lampe2);
         
-        Lampe lampe3 = Lampe(Vector3(200, -100, 200), 50);
+        Lampe lampe3 = Lampe(Vector3(200, -100, 200), 600000);
         addLampe(&lampes, lampe3);
 
         for (unsigned y = 0; y < width; y++)
@@ -165,8 +170,6 @@ int main(int argc, char* argv[]) {
 
                         if (idSphere == -1)
                         {
-                            lampe.intersection = 1;
-
                             Couleur surface = colorOnSurface(lampe, spheres[sphereIntersect]);
                             color(&image, 4 * width * y + 4 * x, surface);
 
