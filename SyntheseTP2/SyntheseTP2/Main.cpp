@@ -16,7 +16,7 @@ void encodeOneStep(const char* filename, std::vector<unsigned char>& image, unsi
 void color(vector<unsigned char>* img, int index, Couleur couleur)
 {
 
-    if (img->at(index) == 256)
+    /*if (img->at(index) == 256 || img->at(index) == 0)
     {
         img->at(index) = couleur.red;
     }
@@ -25,7 +25,7 @@ void color(vector<unsigned char>* img, int index, Couleur couleur)
         img->at(index) = (img->at(index) + couleur.red) / 2;
     }
 
-    if (img->at(index + 1) == 256)
+    if (img->at(index + 1) == 256 || img->at(index+1) == 0)
     {
         img->at(index + 1) = couleur.green;
     }
@@ -34,14 +34,26 @@ void color(vector<unsigned char>* img, int index, Couleur couleur)
         img->at(index + 1) = (img->at(index + 1) + couleur.green) / 2;
     }
 
-    if (img->at(index + 2) == 256)
+    if (img->at(index + 2) == 256 || img->at(index+2) == 0)
     {
         img->at(index + 2) = couleur.blue;
     }
     else
     {
         img->at(index + 2) = (img->at(index + 2) + couleur.blue) / 2;
-    }
+    }*/
+    img->at(index) += couleur.red;
+    if (img->at(index) > 255)
+        img->at(index) = 255;
+
+    img->at(index+1) += couleur.green;
+    if (img->at(index + 1) > 255)
+        img->at(index+1) = 255;
+
+    img->at(index+2) += couleur.blue;
+    if (img->at(index + 2) > 255)
+        img->at(index+2) = 255;
+
     img->at(index + 3) = couleur.alpha;
 }
 
@@ -52,9 +64,9 @@ Couleur colorOnSurface(Lampe lampe, Sphere sphere)
     Vector3 normaleSurface = lampe.GetOrigine() - sphere.GetCentre();
     normaleSurface = normaleSurface.normalize();
 
-    float scalaire = abs(normaleSurface.dot(lampe.GetDirection()));
+    double scalaire = abs(normaleSurface.dot(lampe.GetDirection()));
 
-    float intensity = (lampe.intersection * scalaire * lampe.GetCouleur().intensity) / (2 * acos(0.0) * distanceCarre);
+    float intensity = (lampe.intersection * scalaire * lampe.intensity) / (2 * acos(0.0) * distanceCarre);
 
     return Couleur(sphere.albedo.red * intensity, sphere.albedo.green * intensity, sphere.albedo.blue * intensity);
 }
@@ -155,13 +167,13 @@ int main(int argc, char* argv[]) {
                 {
                     vector<Lampe> lampes;
                     
-                    Lampe lampe1 = Lampe(Vector3(300, 220, 200), Vector3(x,y,minDistance-0.02),Couleur(0,0,255,255,1000));
+                    Lampe lampe1 = Lampe(Vector3(300, 220, 200), Vector3(x,y,minDistance-0.02),100);
                     addLampe(&lampes, lampe1);
 
-                    Lampe lampe2 = Lampe(Vector3(-300, 220, 200), Vector3(x, y, minDistance - 0.02), Couleur(0, 255, 0, 255, 500));
+                    Lampe lampe2 = Lampe(Vector3(-300, 220, 200), Vector3(x, y, minDistance - 0.02), 50);
                     addLampe(&lampes, lampe2);
 
-                    Lampe lampe3 = Lampe(Vector3(200, -100, 200), Vector3(x, y, minDistance - 0.02), Couleur(255, 0, 0, 255, 400));
+                    Lampe lampe3 = Lampe(Vector3(200, -100, 200), Vector3(x, y, minDistance - 0.02), 40);
                     addLampe(&lampes, lampe3);
 
                     bool noIntersection = true;
@@ -183,7 +195,7 @@ int main(int argc, char* argv[]) {
                     }
                     if (noIntersection)
                     {
-                        color(&image, 4 * width * y + 4 * x, Couleur(25, 25, 25));
+                        color(&image, 4 * width * y + 4 * x, Couleur(0, 0, 0));
                     }
                 }
                 else
@@ -192,7 +204,6 @@ int main(int argc, char* argv[]) {
                 }
             }
         }
-        // Normale sphere : normalize(point inter - centre sphere)
         encodeOneStep(filename, image, width, height);
 
 }

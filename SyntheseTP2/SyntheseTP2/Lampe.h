@@ -10,7 +10,7 @@ private:
 public:
 	int intersection;
 
-	Lampe(Vector3 _position, Vector3 _origine, Couleur _couleur)
+	Lampe(Vector3 _position, Vector3 _origine, float _intensity)
 	{
 		Vector3 _direction = _position - _origine;
 		distance = _direction.length();
@@ -18,8 +18,8 @@ public:
 		position = _position;
 		origine = _origine;
 		direction = _direction;
-		couleur = _couleur;
 		intersection = 0;
+		intensity = _intensity;
 	}
 	Lampe(Vector3 _position, Vector3 _origine)
 	{
@@ -29,7 +29,6 @@ public:
 		position = _position;
 		origine = _origine;
 		direction = _direction;
-		couleur = Couleur();
 		intersection = 0;
 	}
 	Lampe() : Rayon()
