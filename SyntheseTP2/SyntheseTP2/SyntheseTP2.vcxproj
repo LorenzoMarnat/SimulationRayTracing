@@ -139,6 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Couleur.cpp" />
     <ClCompile Include="Lampe.cpp" />
     <ClCompile Include="lodepng.cpp" />
@@ -148,6 +149,7 @@
     <ClCompile Include="vector3.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Camera.h" />
     <ClInclude Include="Couleur.h" />
     <ClInclude Include="Lampe.h" />
     <ClInclude Include="lodepng.h" />

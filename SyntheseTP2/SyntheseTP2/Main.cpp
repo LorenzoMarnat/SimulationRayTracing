@@ -1,6 +1,7 @@
 #include "lodepng.h"
 #include "Sphere.h"
 #include "Lampe.h"
+#include "Camera.h"
 #include <math.h>
 #include <iostream>
 
@@ -64,13 +65,8 @@ void addLampe(vector<Lampe>* lampes, Lampe lampe)
     lampes->resize(size + 1);
     lampes->at(size) = lampe;
 }
+
 bool raySphereIntersect(Rayon r, Sphere s, float *distance) {
-    // - r0: ray origin
-    // - rd: normalized ray direction
-    // - s0: sphere center
-    // - sr: sphere radius
-    // - Returns distance from r0 to first intersecion with sphere,
-    //   or -1.0 if no intersection.
     bool intersect = false;
 
     Vector3 s0 = s.GetCentre();
@@ -138,6 +134,7 @@ void intersectLamps(Vector3 intersection,vector<Lampe> lamps,vector<Sphere> sphe
         color(image, index, Couleur(0, 0, 0));
     }
 }
+
 int main(int argc, char* argv[]) {
         const char* filename = argc > 1 ? argv[1] : "test.png";
 
@@ -150,30 +147,36 @@ int main(int argc, char* argv[]) {
             image[i] = 0;
 
         Vector3 plan = Vector3(0, 0, 0);
+        Camera camera = Camera(width, height, 500, Vector3(0, 0, 0));
 
         vector<Sphere> spheres;
 
-        Sphere sphere = Sphere(100, Vector3(200, 100, 200),Couleur(1,0,0));
+        Sphere sphere = Sphere(100, Vector3(200, 100, 250),Couleur(1,0,0));
+
+        Sphere sphere2 = Sphere(100, Vector3(200, 300, 350),Couleur(0,0,1));
+
+        Sphere sphere3 = Sphere(100, Vector3(450, 200, 150), Couleur(0, 1, 0));
+
+        Sphere sphere4 = Sphere(100, Vector3(300, 450, 200), Couleur(0, 1, 1));
+
+        Sphere sphere5 = Sphere(100, Vector3(70, 400, 300), Couleur(1, 1, 0));
+
         addSphere(&spheres, sphere);
-
-        Sphere sphere2 = Sphere(60, Vector3(200, 300, 200),Couleur(0,0,1));
         addSphere(&spheres, sphere2);
-
-        Sphere sphere3 = Sphere(130, Vector3(450, 200, 200), Couleur(0, 1, 0));
         addSphere(&spheres, sphere3);
-
-        Sphere sphere4 = Sphere(90, Vector3(300, 450, 200), Couleur(0, 1, 1));
         addSphere(&spheres, sphere4);
+        addSphere(&spheres, sphere5);
 
         vector<Lampe> lampes;
 
-        Lampe lampe1 = Lampe(Vector3(300, 220, 100), 500000);
-        addLampe(&lampes, lampe1);
+        Lampe lampe1 = Lampe(Vector3(250, 250, 50), 300000);
 
-        Lampe lampe2 = Lampe(Vector3(-300, 220, 200), 400000);
-        addLampe(&lampes, lampe2);
-        
+        Lampe lampe2 = Lampe(Vector3(-300, 220, 200), 600000);
+
         Lampe lampe3 = Lampe(Vector3(200, -100, 200), 300000);
+
+        addLampe(&lampes, lampe1);
+        addLampe(&lampes, lampe2);
         addLampe(&lampes, lampe3);
 
         for (unsigned y = 0; y < width; y++)
@@ -181,13 +184,16 @@ int main(int argc, char* argv[]) {
             for (unsigned x = 0; x < width; x++) 
             {
                 float minDistance;
-
-                Rayon rayon = Rayon(Vector3(0, 0, 1), Vector3(plan.x + x, plan.y + y, plan.z));
+                Vector3 point = Vector3(camera.plan.x + x, camera.plan.y + y, camera.plan.z);
+                Vector3 normale = camera.Normale(point);
+                Rayon rayon = Rayon(normale,point);
+                //Rayon rayon = Rayon(Vector3(0, 0, 1), Vector3(plan.x + x, plan.y + y, plan.z));
                 int sphereIntersect = intersectSpheres(rayon, spheres, &minDistance);
 
                 if (sphereIntersect != -1)
                 {
-                    Vector3 pointIntersection = Vector3(x, y, minDistance - 0.02);
+                    Vector3 pointIntersection = Vector3(minDistance*normale.x+x+camera.plan.x, minDistance * normale.y+y + camera.plan.z, minDistance * normale.z + camera.plan.z -0.02);
+                    //Vector3 pointIntersection = Vector3(x, y, minDistance - 0.02);
                     intersectLamps(pointIntersection, lampes, spheres, sphereIntersect, &image, 4 * width * y + 4 * x);
                 }
                 else
@@ -197,5 +203,4 @@ int main(int argc, char* argv[]) {
             }
         }
         encodeOneStep(filename, image, width, height);
-
 }
