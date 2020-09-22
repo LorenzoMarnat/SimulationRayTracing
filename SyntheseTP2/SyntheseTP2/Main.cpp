@@ -15,33 +15,6 @@ void encodeOneStep(const char* filename, std::vector<unsigned char>& image, unsi
 
 void color(vector<unsigned char>* img, int index, Couleur couleur)
 {
-
-    /*if (img->at(index) == 256 || img->at(index) == 0)
-    {
-        img->at(index) = couleur.red;
-    }
-    else
-    {
-        img->at(index) = (img->at(index) + couleur.red) / 2;
-    }
-
-    if (img->at(index + 1) == 256 || img->at(index+1) == 0)
-    {
-        img->at(index + 1) = couleur.green;
-    }
-    else
-    {
-        img->at(index + 1) = (img->at(index + 1) + couleur.green) / 2;
-    }
-
-    if (img->at(index + 2) == 256 || img->at(index+2) == 0)
-    {
-        img->at(index + 2) = couleur.blue;
-    }
-    else
-    {
-        img->at(index + 2) = (img->at(index + 2) + couleur.blue) / 2;
-    }*/
     img->at(index) += couleur.red;
     if (img->at(index) > 255)
         img->at(index) = 255;
@@ -96,7 +69,7 @@ bool raySphereIntersect(Rayon r, Sphere s, float *distance) {
     float sr = s.GetRayon();
     float a = r.GetDirection().dot(r.GetDirection());
     Vector3 s0_r0 = r.GetOrigine() - s0;
-    float b = 2.0 * r.GetDirection().dot(s0_r0);
+    double b = 2.0 * r.GetDirection().dot(s0_r0);
     float c = s0_r0.dot(s0_r0) - (sr * sr);
     if (b * b - 4.0 * a * c >= 0.0)
     {
@@ -142,18 +115,29 @@ int main(int argc, char* argv[]) {
         image.resize(width * height * 4);
 
         for(int i=0;i< width * height * 4;i++)
-            image[i] = 256;
-
-        vector<Sphere> spheres;
+            image[i] = 0;
 
         Vector3 plan = Vector3(0, 0, 0);
+
+        vector<Sphere> spheres;
 
         Sphere sphere = Sphere(100, Vector3(200, 100, 200),Couleur(1,0,0));
         addSphere(&spheres, sphere);
 
         Sphere sphere2 = Sphere(60, Vector3(200, 300, 200),Couleur(0,0,1));
         addSphere(&spheres, sphere2);
-        
+
+        vector<Lampe> lampes;
+
+        Lampe lampe1 = Lampe(Vector3(300, 220, 200), 100);
+        addLampe(&lampes, lampe1);
+
+        Lampe lampe2 = Lampe(Vector3(-300, 220, 200), 200);
+        addLampe(&lampes, lampe2);
+
+        Lampe lampe3 = Lampe(Vector3(200, -100, 200), 200);
+        addLampe(&lampes, lampe3);
+
         for (unsigned y = 0; y < width; y++)
         {
             for (unsigned x = 0; x < width; x++) 
@@ -165,20 +149,13 @@ int main(int argc, char* argv[]) {
 
                 if (sphereIntersect != -1)
                 {
-                    vector<Lampe> lampes;
-                    
-                    Lampe lampe1 = Lampe(Vector3(300, 220, 200), Vector3(x,y,minDistance-0.02),100);
-                    addLampe(&lampes, lampe1);
-
-                    Lampe lampe2 = Lampe(Vector3(-300, 220, 200), Vector3(x, y, minDistance - 0.02), 50);
-                    addLampe(&lampes, lampe2);
-
-                    Lampe lampe3 = Lampe(Vector3(200, -100, 200), Vector3(x, y, minDistance - 0.02), 40);
-                    addLampe(&lampes, lampe3);
+                    Vector3 pointIntersection = Vector3(x, y, minDistance - 0.02);
 
                     bool noIntersection = true;
                     for (Lampe lampe : lampes)
                     {
+                        lampe.SetOrigine(pointIntersection);
+
                         float distanceLampe;
                         int idSphere = intersectSpheres((Rayon)lampe, spheres, &distanceLampe);
 
