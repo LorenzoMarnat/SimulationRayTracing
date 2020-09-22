@@ -15,17 +15,21 @@ void encodeOneStep(const char* filename, std::vector<unsigned char>& image, unsi
 
 void color(vector<unsigned char>* img, int index, Couleur couleur)
 {
-    img->at(index) += couleur.red;
-    if (img->at(index) > 255)
+    
+    if (img->at(index) + couleur.red > 255)
         img->at(index) = 255;
+    else
+        img->at(index) += couleur.red;
 
-    img->at(index+1) += couleur.green;
-    if (img->at(index + 1) > 255)
+    if (img->at(index+1) + couleur.green > 255)
         img->at(index+1) = 255;
+    else
+        img->at(index+1) += couleur.green;    
 
-    img->at(index+2) += couleur.blue;
-    if (img->at(index + 2) > 255)
+    if (img->at(index+2) + couleur.blue > 255)
         img->at(index+2) = 255;
+    else
+        img->at(index+2) += couleur.blue;
 
     img->at(index + 3) = couleur.alpha;
 }
@@ -129,13 +133,13 @@ int main(int argc, char* argv[]) {
 
         vector<Lampe> lampes;
 
-        Lampe lampe1 = Lampe(Vector3(300, 220, 200), 100);
+        Lampe lampe1 = Lampe(Vector3(300, 220, 200), 20000);
         addLampe(&lampes, lampe1);
 
-        Lampe lampe2 = Lampe(Vector3(-300, 220, 200), 200);
+        Lampe lampe2 = Lampe(Vector3(-300, 220, 200), 50);
         addLampe(&lampes, lampe2);
-
-        Lampe lampe3 = Lampe(Vector3(200, -100, 200), 200);
+        
+        Lampe lampe3 = Lampe(Vector3(200, -100, 200), 50);
         addLampe(&lampes, lampe3);
 
         for (unsigned y = 0; y < width; y++)
@@ -167,7 +171,6 @@ int main(int argc, char* argv[]) {
                             color(&image, 4 * width * y + 4 * x, surface);
 
                             noIntersection = false;
-
                         }
                     }
                     if (noIntersection)
