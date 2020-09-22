@@ -115,6 +115,29 @@ int intersectSpheres(Rayon r, vector<Sphere> spheres, float* distance)
     return intersect;
 }
 
+void intersectLamps(Vector3 intersection,vector<Lampe> lamps,vector<Sphere> spheres, int intersectSphere,vector<unsigned char> *image, int index)
+{
+    bool noIntersection = true;
+    for (Lampe lampe : lamps)
+    {
+        lampe.SetOrigine(intersection);
+
+        float distanceLampe;
+        int idSphere = intersectSpheres((Rayon)lampe, spheres, &distanceLampe);
+
+        if (idSphere == -1)
+        {
+            Couleur surface = colorOnSurface(lampe, spheres[intersectSphere]);
+            color(image, index, surface);
+
+            noIntersection = false;
+        }
+    }
+    if (noIntersection)
+    {
+        color(image, index, Couleur(0, 0, 0));
+    }
+}
 int main(int argc, char* argv[]) {
         const char* filename = argc > 1 ? argv[1] : "test.png";
 
@@ -136,15 +159,21 @@ int main(int argc, char* argv[]) {
         Sphere sphere2 = Sphere(60, Vector3(200, 300, 200),Couleur(0,0,1));
         addSphere(&spheres, sphere2);
 
+        Sphere sphere3 = Sphere(130, Vector3(450, 200, 200), Couleur(0, 1, 0));
+        addSphere(&spheres, sphere3);
+
+        Sphere sphere4 = Sphere(90, Vector3(300, 450, 200), Couleur(0, 1, 1));
+        addSphere(&spheres, sphere4);
+
         vector<Lampe> lampes;
 
-        Lampe lampe1 = Lampe(Vector3(300, 220, 100), 1000000);
+        Lampe lampe1 = Lampe(Vector3(300, 220, 100), 500000);
         addLampe(&lampes, lampe1);
 
-        Lampe lampe2 = Lampe(Vector3(-300, 220, 200), 800000);
+        Lampe lampe2 = Lampe(Vector3(-300, 220, 200), 400000);
         addLampe(&lampes, lampe2);
         
-        Lampe lampe3 = Lampe(Vector3(200, -100, 200), 600000);
+        Lampe lampe3 = Lampe(Vector3(200, -100, 200), 300000);
         addLampe(&lampes, lampe3);
 
         for (unsigned y = 0; y < width; y++)
@@ -159,27 +188,7 @@ int main(int argc, char* argv[]) {
                 if (sphereIntersect != -1)
                 {
                     Vector3 pointIntersection = Vector3(x, y, minDistance - 0.02);
-
-                    bool noIntersection = true;
-                    for (Lampe lampe : lampes)
-                    {
-                        lampe.SetOrigine(pointIntersection);
-
-                        float distanceLampe;
-                        int idSphere = intersectSpheres((Rayon)lampe, spheres, &distanceLampe);
-
-                        if (idSphere == -1)
-                        {
-                            Couleur surface = colorOnSurface(lampe, spheres[sphereIntersect]);
-                            color(&image, 4 * width * y + 4 * x, surface);
-
-                            noIntersection = false;
-                        }
-                    }
-                    if (noIntersection)
-                    {
-                        color(&image, 4 * width * y + 4 * x, Couleur(0, 0, 0));
-                    }
+                    intersectLamps(pointIntersection, lampes, spheres, sphereIntersect, &image, 4 * width * y + 4 * x);
                 }
                 else
                 {

@@ -23,12 +23,7 @@ public:
 	}
 	Lampe(Vector3 _position, float _intensity)
 	{
-		//Vector3 _direction = _position - _origine;
-		//distance = _direction.length();
-		//_direction.normalize();
 		position = _position;
-		//origine = _origine;
-		//direction = _direction;
 		distance = 0;
 		origine = Vector3(0, 0, 0);
 		direction = Vector3(0, 0, 0);
