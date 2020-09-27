@@ -4,7 +4,7 @@
 
 class Sphere
 {
-private:
+protected:
 	float rayon;
 	Vector3 centre;
 
@@ -49,5 +49,7 @@ public:
 	void SetRayon(float _rayon) { rayon = _rayon; }
 
 	void SetCentre(Vector3 _centre) { centre = _centre; }
+
+	virtual void PrintDebug() const { std::cout << "Sphere" << std::endl; }
 };
 
