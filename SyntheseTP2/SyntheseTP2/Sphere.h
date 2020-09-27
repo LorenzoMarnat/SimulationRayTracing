@@ -1,6 +1,9 @@
 #pragma once
 #include "vector3.h"
 #include "Couleur.h"
+#include <vector>
+#include "Lampe.h"
+//#include "Singleton.h"
 
 class Sphere
 {
@@ -50,6 +53,5 @@ public:
 
 	void SetCentre(Vector3 _centre) { centre = _centre; }
 
-	virtual void PrintDebug() const { std::cout << "Sphere" << std::endl; }
+	virtual bool IsMirror() { return false; }
 };
-

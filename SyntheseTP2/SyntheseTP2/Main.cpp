@@ -111,9 +111,35 @@ int intersectSpheres(Rayon r, vector<Sphere*> spheres, float* distance)
     }
     return intersect;
 }
+void mirrorRebound(Vector3 intersection, Rayon rayon, vector<Sphere*> spheres, int intersectSphere, vector<unsigned char>* image, int index)
+{
+    float minDistance;
+
+    Vector3 normaleRayon = rayon.GetDirection();
+
+    Vector3 normaleSurface = intersection - spheres[intersectSphere]->GetCentre();
+    normaleSurface = normaleSurface.normalize();
+
+    Vector3 directionRayon = (-normaleRayon.dot(normaleSurface)) * normaleSurface * 2 + normaleRayon;
+
+    Rayon rayonSortant = Rayon(directionRayon, intersection);
+
+    int sphereIntersect = intersectSpheres(rayonSortant, spheres, &minDistance);
+    if (sphereIntersect != -1)
+    {
+        Couleur surface = spheres[sphereIntersect]->albedo;
+        surface = surface*Couleur(255, 255, 255);
+        color(image, index, surface);
+    }
+    else
+    {
+        color(image, index, Couleur(240, 240, 240, 150));
+    }
+}
 
 void intersectLamps(Vector3 intersection,vector<Lampe> lamps,vector<Sphere*> spheres, int intersectSphere,vector<unsigned char> *image, int index)
 {
+    Couleur surface;
     bool noIntersection = true;
     for (Lampe lampe : lamps)
     {
@@ -123,7 +149,7 @@ void intersectLamps(Vector3 intersection,vector<Lampe> lamps,vector<Sphere*> sph
         int idSphere = intersectSpheres(lampe, spheres, &distanceLampe);
         if (idSphere == -1 || distanceLampe > lampe.GetDistance())
         {
-            Couleur surface = colorOnSurface(lampe, spheres[intersectSphere]);
+            surface = colorOnSurface(lampe, spheres[intersectSphere]);
             color(image, index, surface);
 
             noIntersection = false;
@@ -134,10 +160,7 @@ void intersectLamps(Vector3 intersection,vector<Lampe> lamps,vector<Sphere*> sph
         color(image, index, Couleur(0, 0, 0));
     }
 }
-void Print(Sphere* s)
-{
-    s->PrintDebug();
-}
+
 int main(int argc, char* argv[]) {
         const char* filename = argc > 1 ? argv[1] : "test.png";
 
@@ -198,7 +221,14 @@ int main(int argc, char* argv[]) {
                 if (sphereIntersect != -1)
                 {
                     Vector3 pointIntersection = Vector3(minDistance*normale.x + x + camera.plan.x, minDistance * normale.y + y + camera.plan.z, minDistance * normale.z + camera.plan.z -0.02);
-                    intersectLamps(pointIntersection, lampes, spheres, sphereIntersect, &image, 4 * width * y + 4 * x);
+                    if (!spheres[sphereIntersect]->IsMirror())
+                    {
+                        intersectLamps(pointIntersection, lampes, spheres, sphereIntersect, &image, 4 * width * y + 4 * x);
+                    }
+                    else
+                    {
+                        mirrorRebound(pointIntersection, rayon, spheres, sphereIntersect, &image, 4 * width * y + 4 * x);
+                    }
                 }
                 else
                 {

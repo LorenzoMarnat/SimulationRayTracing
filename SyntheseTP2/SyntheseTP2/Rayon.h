@@ -11,6 +11,7 @@ protected:
 public:
 	float intensity;
 	int rebound;
+	static const int maxRebound = 5;
 
 	Rayon(Vector3 _direction, Vector3 _origin, float _intensity)
 	{

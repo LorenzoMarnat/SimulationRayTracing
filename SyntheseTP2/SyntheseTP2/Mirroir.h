@@ -17,7 +17,6 @@ public:
 		centre = Vector3(0, 0, 0);
 		albedo = Couleur(1, 1, 1);
 	}
-
-	virtual void PrintDebug() const { std::cout << "Mirroir" << std::endl; }
+	virtual bool IsMirror() { return true; }
 };
 
