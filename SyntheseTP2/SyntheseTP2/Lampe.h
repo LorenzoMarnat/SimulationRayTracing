@@ -10,35 +10,38 @@ private:
 public:
 	int intersection;
 
-	Lampe(Vector3 _position, Vector3 _origine, float _intensity)
+	Lampe(Vector3 _position, Vector3 _origin, float _intensity)
 	{
-		Vector3 _direction = _position - _origine;
+		Vector3 _direction = _position - _origin;
 		distance = _direction.length();
 		_direction.normalize();
 		position = _position;
-		origine = _origine;
+		origin = _origin;
 		direction = _direction;
 		intersection = 0;
 		intensity = _intensity;
+		rebound = 0;
 	}
 	Lampe(Vector3 _position, float _intensity)
 	{
 		position = _position;
 		distance = 0;
-		origine = Vector3(0, 0, 0);
+		origin = Vector3(0, 0, 0);
 		direction = Vector3(0, 0, 0);
 		intersection = 0;
 		intensity = _intensity;
+		rebound = 0;
 	}
-	Lampe(Vector3 _position, Vector3 _origine)
+	Lampe(Vector3 _position, Vector3 _origin)
 	{
-		Vector3 _direction = _position - _origine;
+		Vector3 _direction = _position - _origin;
 		distance = _direction.length();
 		_direction.normalize();
 		position = _position;
-		origine = _origine;
+		origin = _origin;
 		direction = _direction;
 		intersection = 0;
+		rebound = 0;
 	}
 	Lampe() : Rayon()
 	{
@@ -51,12 +54,12 @@ public:
 
 	float GetDistance() { return distance; }
 
-	void SetOrigine(Vector3 _origine)
+	void SetOrigin(Vector3 _origin)
 	{
-		Vector3 _direction = position - _origine;
+		Vector3 _direction = position - _origin;
 		distance = _direction.length();
 		direction = _direction.normalize();
-		origine = _origine;
+		origin = _origin;
 	}
 
 };

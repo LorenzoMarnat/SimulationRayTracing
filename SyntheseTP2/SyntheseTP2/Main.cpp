@@ -42,7 +42,7 @@ Couleur colorOnSurface(Lampe lampe, Sphere sphere)
 {
     float distanceCarre = (lampe.GetDistance())* (lampe.GetDistance());
 
-    Vector3 normaleSurface = lampe.GetOrigine() - sphere.GetCentre();
+    Vector3 normaleSurface = lampe.GetOrigin() - sphere.GetCentre();
     normaleSurface = normaleSurface.normalize();
 
     double scalaire = abs(normaleSurface.dot(lampe.GetDirection()));
@@ -72,7 +72,7 @@ bool raySphereIntersect(Rayon r, Sphere s, float *distance) {
     Vector3 s0 = s.GetCentre();
     float sr = s.GetRayon();
     float a = r.GetDirection().dot(r.GetDirection());
-    Vector3 s0_r0 = r.GetOrigine() - s0;
+    Vector3 s0_r0 = r.GetOrigin() - s0;
     double b = 2.0 * r.GetDirection().dot(s0_r0);
     float c = s0_r0.dot(s0_r0) - (sr * sr);
     if (b * b - 4.0 * a * c >= 0.0)
@@ -116,7 +116,7 @@ void intersectLamps(Vector3 intersection,vector<Lampe> lamps,vector<Sphere> sphe
     bool noIntersection = true;
     for (Lampe lampe : lamps)
     {
-        lampe.SetOrigine(intersection);
+        lampe.SetOrigin(intersection);
 
         float distanceLampe;
         int idSphere = intersectSpheres((Rayon)lampe, spheres, &distanceLampe);
@@ -137,7 +137,7 @@ void intersectLamps(Vector3 intersection,vector<Lampe> lamps,vector<Sphere> sphe
 int main(int argc, char* argv[]) {
         const char* filename = argc > 1 ? argv[1] : "test.png";
 
-        unsigned width = 512, height = 512;
+        unsigned width = 1024, height = 1024;
          
         vector<unsigned char> image;
         image.resize(width * height * 4);
@@ -145,19 +145,19 @@ int main(int argc, char* argv[]) {
         for(int i=0;i< width * height * 4;i++)
             image[i] = 0;
 
-        Camera camera = Camera(width, height, 512, Vector3(0, 0, 0));
+        Camera camera = Camera(width, height, 1024, Vector3(0, 0, 0));
 
         vector<Sphere> spheres;
 
-        Sphere rouge = Sphere(100, Vector3(200, 0, 350),Couleur(1,0,0));
+        Sphere rouge = Sphere(200, Vector3(200, 0, 350),Couleur(1,0,0));
 
-        Sphere bleu = Sphere(100, Vector3(200, 450, 250),Couleur(0,0,1));
+        Sphere bleu = Sphere(200, Vector3(200, 450, 250),Couleur(0,0,1));
 
-        Sphere vert = Sphere(100, Vector3(450, 200, 150), Couleur(0, 1, 0));
+        Sphere vert = Sphere(150, Vector3(850, 200, 150), Couleur(0, 1, 0));
 
-        Sphere cyan = Sphere(100, Vector3(450, 450, 200), Couleur(0, 1, 1));
+        Sphere cyan = Sphere(150, Vector3(800, 800, 200), Couleur(0, 1, 1));
 
-        Sphere jaune = Sphere(100, Vector3(0, 300, 300), Couleur(1, 1, 0));
+        Sphere jaune = Sphere(100, Vector3(0, 800, 300), Couleur(1, 1, 0));
 
         addSphere(&spheres, rouge);
         addSphere(&spheres, bleu);
@@ -167,11 +167,11 @@ int main(int argc, char* argv[]) {
 
         vector<Lampe> lampes;
 
-        Lampe lampe1 = Lampe(Vector3(200, 250, 250), 30000000);
+        Lampe lampe1 = Lampe(Vector3(500, 500, 100), 60000000);
 
-        Lampe lampe2 = Lampe(Vector3(-300, 220, 200), 60000000);
+        Lampe lampe2 = Lampe(Vector3(-300, 400, 200), 60000000);
 
-        Lampe lampe3 = Lampe(Vector3(200, -100, 200), 30000000);
+        Lampe lampe3 = Lampe(Vector3(650, -100, 200), 60000000);
 
         addLampe(&lampes, lampe1);
         addLampe(&lampes, lampe2);
@@ -195,7 +195,7 @@ int main(int argc, char* argv[]) {
                 }
                 else
                 {
-                    color(&image, 4 * width * y + 4 * x, Couleur());
+                    color(&image, 4 * width * y + 4 * x, Couleur(100,100,100));
                 }
             }
         }
