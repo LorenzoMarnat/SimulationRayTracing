@@ -129,7 +129,7 @@ void mirrorRebound(Vector3 intersection, Rayon rayon, vector<Sphere*> spheres, i
     if (sphereIntersect != -1)
     {
         Vector3 newIntersection = Vector3(minDistance * normaleRayon.x + intersection.x, minDistance * normaleRayon.y + intersection.y, minDistance * normaleRayon.z + intersection.z - 0.02);
-        Lampe lampe = Lampe(intersection, newIntersection, 20000000);
+        Lampe lampe = Lampe(intersection, newIntersection, 80000000);
         Couleur surface = colorOnSurface(lampe, spheres[sphereIntersect]);
 
         color(image, index, surface);
@@ -189,7 +189,17 @@ int main(int argc, char* argv[]) {
 
         SphereCouleur jaune = SphereCouleur(100, Vector3(0, 800, 300), Couleur(1, 1, 0));
 
-        SphereCouleur terre = SphereCouleur(10000, Vector3(512, 10000, 5000), Couleur(1, 1, 1));
+        SphereCouleur sol = SphereCouleur(100000, Vector3(512, 101000, 500), Couleur(1, 0, 1));
+
+        SphereCouleur mur = SphereCouleur(100000, Vector3(512, 512, -100200), Couleur(1, 0, 1));
+
+        SphereCouleur plafond = SphereCouleur(100000, Vector3(512, -100500, 500), Couleur(1, 0, 1));
+
+        SphereCouleur murFond = SphereCouleur(100000, Vector3(512, 512, 101000), Couleur(1, 0, 1));
+
+        SphereCouleur murDroite = SphereCouleur(100000, Vector3(-100500, 512, 512), Couleur(1, 0, 1));
+
+        SphereCouleur murGauche = SphereCouleur(100000, Vector3(101000, 512, 512), Couleur(1, 0, 1));
 
         Mirroir mirroir = Mirroir(200, Vector3(600, 500, 500), Couleur(1, 1, 1));
 
@@ -198,16 +208,21 @@ int main(int argc, char* argv[]) {
         addSphere(&spheres, &vert);
         addSphere(&spheres, &cyan);
         addSphere(&spheres, &jaune);
-        addSphere(&spheres, &terre);
+        addSphere(&spheres, &sol);
+        addSphere(&spheres, &murDroite);
+        addSphere(&spheres, &murFond);
+        addSphere(&spheres, &murGauche);
+        addSphere(&spheres, &mur);
+        addSphere(&spheres, &plafond);
         addSphere(&spheres, &mirroir);
 
         vector<Lampe> lampes;
 
         Lampe lampe1 = Lampe(Vector3(500, 500, 100), 60000000);
 
-        Lampe lampe2 = Lampe(Vector3(-300, 400, 200), 60000000);
+        Lampe lampe2 = Lampe(Vector3(-300, 400, 300), 90000000);
 
-        Lampe lampe3 = Lampe(Vector3(650, -100, 200), 60000000);
+        Lampe lampe3 = Lampe(Vector3(650, -100, 500), 80000000);
 
         addLampe(&lampes, lampe1);
         addLampe(&lampes, lampe2);
