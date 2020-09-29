@@ -2,7 +2,7 @@
 class Couleur
 {
 private:
-	void CheckColors(float* red, float* green, float* blue, float* alpha)
+	void CheckColors(double* red, double* green, double* blue, float* alpha)
 	{
 		if (*red > 255)
 			*red = 255;
@@ -24,7 +24,7 @@ private:
 		if (*alpha < 0)
 			*alpha = 0;
 	}
-	void CheckColors(float* red, float* green, float* blue)
+	void CheckColors(double* red, double* green, double* blue)
 	{
 		if (*red > 255)
 			*red = 255;
@@ -42,12 +42,12 @@ private:
 			*blue = 0;
 	}
 public:
-	float blue;
-	float red;
-	float green;
+	double blue;
+	double red;
+	double green;
 	float alpha;
 
-	Couleur(float _red, float _green, float _blue, float _alpha)
+	Couleur(double _red, double _green, double _blue, float _alpha)
 	{
 		//CheckColors(&_red, &_green, &_blue, &_alpha);
 		red = _red;
@@ -55,7 +55,7 @@ public:
 		blue = _blue;
 		alpha = _alpha;
 	}
-	Couleur(float _red, float _green, float _blue)
+	Couleur(double _red, double _green, double _blue)
 	{
 		//CheckColors(&_red, &_green, &_blue);
 		red = _red;
@@ -65,9 +65,9 @@ public:
 	}
 	Couleur()
 	{
-		red = 255;
-		green = 255;
-		blue = 255;
+		red = 0;
+		green = 0;
+		blue = 0;
 		alpha = 255;
 	}
 	void operator=(Couleur c)

@@ -20,27 +20,36 @@ void encodeOneStep(const char* filename, std::vector<unsigned char>& image, unsi
 
 void normalizeColor(vector<unsigned char>* imageOut, vector<double>* image)
 {
-    double maxRed = 0;
-    double maxGreen = 0;
-    double maxBlue = 0;
+    double max = 0;
     for (int i = 0; i < image->size(); i += 4)
     {
-        if (image->at(i) > maxRed)
-            maxRed = image->at(i);
+        if (image->at(i) > max)
+            max = image->at(i);
 
-        if (image->at(i+1) > maxGreen)
-            maxGreen = image->at(i+1);
+        if (image->at(i+1) > max)
+            max = image->at(i+1);
 
-        if (image->at(i+2) > maxBlue)
-            maxBlue = image->at(i+2);
+        if (image->at(i+2) > max)
+            max = image->at(i+2);
     }
+    
+    max = max / 4;
     for (int i = 0; i < image->size(); i += 4)
     {
-         imageOut->at(i) = (int)((image->at(i) / maxRed) * 255);
+        if ((int)((image->at(i) / max) * 255) > 255)
+            imageOut->at(i) = 255;
+        else
+            imageOut->at(i) = (int)((image->at(i) / max) * 255);
 
-         imageOut->at(i+1) = (int)((image->at(i+1) / maxGreen) * 255);
+        if ((int)((image->at(i+1) / max) * 255) > 255)
+            imageOut->at(i+1) = 255;
+        else
+            imageOut->at(i+1) = (int)((image->at(i+1) / max) * 255);
 
-         imageOut->at(i+2) = (int)((image->at(i+2) / maxBlue) * 255);
+        if ((int)((image->at(i+2) / max) * 255) > 255)
+            imageOut->at(i+2) = 255;
+        else
+            imageOut->at(i+2) = (int)((image->at(i+2) / max) * 255);
 
          imageOut->at(i+3) = image->at(i+3);
     }
@@ -53,27 +62,6 @@ void color(vector<double>* img, int index, Couleur couleur)
     img->at(index + 1) += couleur.green;
 
     img->at(index + 2) += couleur.blue;
-
-    img->at(index + 3) = couleur.alpha;
-}
-
-void color(vector<unsigned char>* img, int index, Couleur couleur)
-{
-    
-    if (img->at(index) + couleur.red > 255)
-        img->at(index) = 255;
-    else
-        img->at(index) += couleur.red;
-
-    if (img->at(index+1) + couleur.green > 255)
-        img->at(index+1) = 255;
-    else
-        img->at(index+1) += couleur.green;    
-
-    if (img->at(index+2) + couleur.blue > 255)
-        img->at(index+2) = 255;
-    else
-        img->at(index+2) += couleur.blue;
 
     img->at(index + 3) = couleur.alpha;
 }
@@ -175,7 +163,7 @@ void mirrorRebound(Vector3 intersection, Rayon rayon, vector<Sphere*> spheres, i
             mirrorRebound(newIntersection, rayonSortant, spheres, sphereIntersect, image, index);
         else
         {
-            Lampe lampe = Lampe(intersection, newIntersection, 80000000);
+            Lampe lampe = Lampe(intersection, newIntersection, 50000000);
             Couleur surface = colorOnSurface(lampe, spheres[sphereIntersect]);
 
             color(image, index, surface);
@@ -270,11 +258,11 @@ int main(int argc, char* argv[]) {
 
         vector<Lampe> lampes;
 
-        Lampe lampe1 = Lampe(Vector3(500, 500, 100), 200000000);
+        Lampe lampe1 = Lampe(Vector3(500, 500, 100), 90000000);
 
         Lampe lampe2 = Lampe(Vector3(-300, 400, 300), 90000000);
 
-        Lampe lampe3 = Lampe(Vector3(650, -100, 500), 90000000);
+        Lampe lampe3 = Lampe(Vector3(650, -100, 200), 90000000);
 
         addLampe(&lampes, lampe1);
         addLampe(&lampes, lampe2);
