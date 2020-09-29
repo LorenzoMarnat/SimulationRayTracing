@@ -125,14 +125,22 @@ void mirrorRebound(Vector3 intersection, Rayon rayon, vector<Sphere*> spheres, i
 
     Rayon rayonSortant = Rayon(directionRayon, intersection);
 
+    rayonSortant.rebound = ++rayon.rebound;
+
     int sphereIntersect = intersectSpheres(rayonSortant, spheres, &minDistance);
     if (sphereIntersect != -1)
     {
         Vector3 newIntersection = Vector3(minDistance * normaleRayon.x + intersection.x, minDistance * normaleRayon.y + intersection.y, minDistance * normaleRayon.z + intersection.z - 0.02);
-        Lampe lampe = Lampe(intersection, newIntersection, 80000000);
-        Couleur surface = colorOnSurface(lampe, spheres[sphereIntersect]);
 
-        color(image, index, surface);
+        if (spheres[sphereIntersect]->IsMirror() && rayonSortant.rebound < Rayon::maxRebound)
+            mirrorRebound(newIntersection, rayonSortant, spheres, sphereIntersect, image, index);
+        else
+        {
+            Lampe lampe = Lampe(intersection, newIntersection, 80000000);
+            Couleur surface = colorOnSurface(lampe, spheres[sphereIntersect]);
+
+            color(image, index, surface);
+        }
     }
     else
     {
