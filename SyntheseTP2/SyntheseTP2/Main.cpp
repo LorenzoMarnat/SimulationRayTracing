@@ -5,6 +5,8 @@
 #include "Camera.h"
 #include <math.h>
 #include <iostream>
+#include <random>
+#include <ctime>
 
 #define PI 3.141593
 
@@ -201,6 +203,11 @@ void intersectLamps(Vector3 intersection,vector<Lampe> lamps,vector<Sphere*> sph
     }
 }
 
+float randomFloat(float min, float max) {
+
+    return ((float)rand() / RAND_MAX) * (max - min) + min;
+}
+
 int main(int argc, char* argv[]) {
         const char* filename = argc > 1 ? argv[1] : "test.png";
 
@@ -214,6 +221,8 @@ int main(int argc, char* argv[]) {
 
         for (int i = 0; i < width * height * 4; i++)
             image[i] = 0;
+
+        srand(time(NULL));
 
         Camera camera = Camera(width, height, 1024, Vector3(0, 0, 0));
 
