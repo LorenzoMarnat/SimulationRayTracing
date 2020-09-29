@@ -23,7 +23,7 @@ void encodeOneStep(const char* filename, std::vector<unsigned char>& image, unsi
 void normalizeColor(vector<unsigned char>* imageOut, vector<double>* image)
 {
     double max = 0;
-    for (int i = 0; i < image->size(); i += 4)
+    for (int i = 0; i < (int)image->size(); i += 4)
     {
         if (image->at(i) > max)
             max = image->at(i);
@@ -36,7 +36,7 @@ void normalizeColor(vector<unsigned char>* imageOut, vector<double>* image)
     }
     
     max = max / 4;
-    for (int i = 0; i < image->size(); i += 4)
+    for (int i = 0; i < (int)image->size(); i += 4)
     {
         if ((int)((image->at(i) / max) * 255) > 255)
             imageOut->at(i) = 255;
@@ -77,7 +77,7 @@ Couleur colorOnSurface(Lampe lampe, Sphere* sphere)
 
     double scalaire = abs(normaleSurface.dot(lampe.GetDirection()));
 
-    float intensity = (scalaire * lampe.intensity) / (PI * distanceCarre);
+    double intensity = (scalaire * lampe.intensity) / (PI * distanceCarre);
 
     return Couleur(sphere->albedo.red * intensity, sphere->albedo.green * intensity, sphere->albedo.blue * intensity);
 }
@@ -117,7 +117,7 @@ bool raySphereIntersect(Rayon r, Sphere* s, float *distance) {
 int intersectSpheres(Rayon r, vector<Sphere*> spheres, float* distance)
 {
     int intersect = -1;
-    for(int i = 0;i< spheres.size();i++)
+    for(int i = 0;i< (int)spheres.size();i++)
     {
         float minDistance;
         bool inteSphere = raySphereIntersect(r, spheres[i], &minDistance);
@@ -141,7 +141,7 @@ int intersectSpheres(Rayon r, vector<Sphere*> spheres, float* distance)
     return intersect;
 }
 
-void mirrorRebound(Vector3 intersection, Rayon rayon, vector<Sphere*> spheres, int intersectSphere, vector<double>* image, int index)
+void mirrorRebound(Vector3 intersection, Rayon rayon, vector<Lampe> lamps, vector<Sphere*> spheres, int intersectSphere, vector<double>* image, int index)
 {
     float minDistance;
 
@@ -159,16 +159,20 @@ void mirrorRebound(Vector3 intersection, Rayon rayon, vector<Sphere*> spheres, i
     int sphereIntersect = intersectSpheres(rayonSortant, spheres, &minDistance);
     if (sphereIntersect != -1)
     {
-        Vector3 newIntersection = Vector3(minDistance * normaleRayon.x + intersection.x, minDistance * normaleRayon.y + intersection.y, minDistance * normaleRayon.z + intersection.z - 0.02);
+        Vector3 newIntersection = Vector3(minDistance * normaleRayon.x + intersection.x, minDistance * normaleRayon.y + intersection.y, (float)(minDistance * normaleRayon.z + intersection.z - 0.02));
 
         if (spheres[sphereIntersect]->IsMirror() && rayonSortant.rebound < Rayon::maxRebound)
-            mirrorRebound(newIntersection, rayonSortant, spheres, sphereIntersect, image, index);
+        {
+            mirrorRebound(newIntersection, rayonSortant, lamps, spheres, sphereIntersect, image, index);
+        }
         else
         {
-            Lampe lampe = Lampe(intersection, newIntersection, 30000000);
+            intersectLamps(newIntersection,lamps,spheres,sphereIntersect,image,index);
+
+            /*Lampe lampe = Lampe(intersection, newIntersection, 30000000);
             Couleur surface = colorOnSurface(lampe, spheres[sphereIntersect]);
 
-            color(image, index, surface);
+            color(image, index, surface);*/
         }
     }
     else
@@ -208,10 +212,28 @@ float randomFloat(float min, float max) {
     return ((float)rand() / RAND_MAX) * (max - min) + min;
 }
 
+void checkNormale(Vector3* n)
+{
+    if (n->x > 1)
+        n->x = 1;
+    if (n->x < -1)
+        n->x = -1;
+
+    if (n->y > 1)
+        n->y = 1;
+    if (n->y < -1)
+        n->y = -1;
+
+    if (n->z > 1)
+        n->z = 1;
+    if (n->z < -1)
+        n->z = -1;
+}
+
 int main(int argc, char* argv[]) {
         const char* filename = argc > 1 ? argv[1] : "test.png";
 
-        unsigned width = 1024, height = 1024;
+        int width = 1024, height = 1024;
          
         vector<unsigned char> imageOut;
         imageOut.resize(width * height * 4);
@@ -224,7 +246,7 @@ int main(int argc, char* argv[]) {
 
         srand(time(NULL));
 
-        Camera camera = Camera(width, height, 1024, Vector3(0, 0, 0));
+        Camera camera = Camera((float)width, (float)height, 1024, Vector3(0, 0, 0));
 
         vector<Sphere*> spheres;
 
@@ -277,33 +299,39 @@ int main(int argc, char* argv[]) {
         addLampe(&lampes, lampe2);
         addLampe(&lampes, lampe3);
 
-        for (unsigned y = 0; y < width; y++)
+        for (int y = 0; y < width; y++)
         {
-            for (unsigned x = 0; x < width; x++) 
+            for (int x = 0; x < width; x++) 
             {
                 float minDistance;
 
                 Vector3 point = Vector3(camera.plan.x + x, camera.plan.y + y, camera.plan.z);
                 Vector3 normale = camera.Normale(point);
-                Rayon rayon = Rayon(normale,point);
 
-                int sphereIntersect = intersectSpheres(rayon, spheres, &minDistance);
-                if (sphereIntersect != -1)
+                /*for (int i = 0; i < 5; i++)
                 {
-                    Vector3 pointIntersection = Vector3(minDistance*normale.x + x + camera.plan.x, minDistance * normale.y + y + camera.plan.z, minDistance * normale.z + camera.plan.z -0.02);
-                    if (!spheres[sphereIntersect]->IsMirror())
+                    Vector3 normaleRand = Vector3(normale.x + randomFloat(-0.003, 0.003), normale.y + randomFloat(-0.003, 0.003), normale.z + randomFloat(-0.003, 0.003));
+                    checkNormale(&normaleRand);
+                    Rayon rayon = Rayon(normaleRand, point);*/
+                Rayon rayon = Rayon(normale, point);
+                    int sphereIntersect = intersectSpheres(rayon, spheres, &minDistance);
+                    if (sphereIntersect != -1)
                     {
-                        intersectLamps(pointIntersection, lampes, spheres, sphereIntersect, &image, 4 * width * y + 4 * x);
+                        Vector3 pointIntersection = Vector3(minDistance * normale.x + x + camera.plan.x, minDistance * normale.y + y + camera.plan.z, (float)(minDistance * normale.z + camera.plan.z - 0.02));
+                        if (!spheres[sphereIntersect]->IsMirror())
+                        {
+                            intersectLamps(pointIntersection, lampes, spheres, sphereIntersect, &image, 4 * width * y + 4 * x);
+                        }
+                        else
+                        {
+                            mirrorRebound(pointIntersection, rayon,lampes, spheres, sphereIntersect, &image, 4 * width * y + 4 * x);
+                        }
                     }
                     else
                     {
-                        mirrorRebound(pointIntersection, rayon, spheres, sphereIntersect, &image, 4 * width * y + 4 * x);
+                        color(&image, 4 * width * y + 4 * x, Couleur(100, 100, 100));
                     }
-                }
-                else
-                {
-                    color(&image, 4 * width * y + 4 * x, Couleur(100,100,100));
-                }
+                //}
             }
         }
         normalizeColor(&imageOut, &image);
