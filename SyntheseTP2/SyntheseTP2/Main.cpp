@@ -163,7 +163,7 @@ void mirrorRebound(Vector3 intersection, Rayon rayon, vector<Sphere*> spheres, i
             mirrorRebound(newIntersection, rayonSortant, spheres, sphereIntersect, image, index);
         else
         {
-            Lampe lampe = Lampe(intersection, newIntersection, 50000000);
+            Lampe lampe = Lampe(intersection, newIntersection, 30000000);
             Couleur surface = colorOnSurface(lampe, spheres[sphereIntersect]);
 
             color(image, index, surface);
