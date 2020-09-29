@@ -14,10 +14,11 @@ public:
 	{
 		Vector3 _direction = _position - _origin;
 		distance = _direction.length();
-		_direction.normalize();
-		position = _position;
+		direction =  _direction.normalize();
 		origin = _origin;
-		direction = _direction;
+
+		position = _position;
+
 		intersection = 0;
 		intensity = _intensity;
 		rebound = 0;
@@ -36,10 +37,9 @@ public:
 	{
 		Vector3 _direction = _position - _origin;
 		distance = _direction.length();
-		_direction.normalize();
+		direction = _direction.normalize();
 		position = _position;
 		origin = _origin;
-		direction = _direction;
 		intersection = 0;
 		rebound = 0;
 	}

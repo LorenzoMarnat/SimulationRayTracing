@@ -111,6 +111,7 @@ int intersectSpheres(Rayon r, vector<Sphere*> spheres, float* distance)
     }
     return intersect;
 }
+
 void mirrorRebound(Vector3 intersection, Rayon rayon, vector<Sphere*> spheres, int intersectSphere, vector<unsigned char>* image, int index)
 {
     float minDistance;
@@ -127,8 +128,10 @@ void mirrorRebound(Vector3 intersection, Rayon rayon, vector<Sphere*> spheres, i
     int sphereIntersect = intersectSpheres(rayonSortant, spheres, &minDistance);
     if (sphereIntersect != -1)
     {
-        Couleur surface = spheres[sphereIntersect]->albedo;
-        surface = surface*Couleur(255, 255, 255);
+        Vector3 newIntersection = Vector3(minDistance * normaleRayon.x + intersection.x, minDistance * normaleRayon.y + intersection.y, minDistance * normaleRayon.z + intersection.z - 0.02);
+        Lampe lampe = Lampe(intersection, newIntersection, 20000000);
+        Couleur surface = colorOnSurface(lampe, spheres[sphereIntersect]);
+
         color(image, index, surface);
     }
     else
@@ -188,7 +191,7 @@ int main(int argc, char* argv[]) {
 
         SphereCouleur terre = SphereCouleur(10000, Vector3(512, 10000, 5000), Couleur(1, 1, 1));
 
-        Mirroir mirroir = Mirroir(200, Vector3(500, 500, 500), Couleur(1, 1, 1));
+        Mirroir mirroir = Mirroir(200, Vector3(600, 500, 500), Couleur(1, 1, 1));
 
         addSphere(&spheres, &rouge);
         addSphere(&spheres, &bleu);
