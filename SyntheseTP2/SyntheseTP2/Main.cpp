@@ -133,7 +133,7 @@ void mirrorRebound(Vector3 intersection, Rayon rayon, vector<Sphere*> spheres, i
     }
     else
     {
-        color(image, index, Couleur(240, 240, 240, 150));
+        color(image, index, Couleur(100, 100, 100));
     }
 }
 
@@ -186,6 +186,8 @@ int main(int argc, char* argv[]) {
 
         SphereCouleur jaune = SphereCouleur(100, Vector3(0, 800, 300), Couleur(1, 1, 0));
 
+        SphereCouleur terre = SphereCouleur(10000, Vector3(512, 10000, 5000), Couleur(1, 1, 1));
+
         Mirroir mirroir = Mirroir(200, Vector3(500, 500, 500), Couleur(1, 1, 1));
 
         addSphere(&spheres, &rouge);
@@ -193,6 +195,7 @@ int main(int argc, char* argv[]) {
         addSphere(&spheres, &vert);
         addSphere(&spheres, &cyan);
         addSphere(&spheres, &jaune);
+        addSphere(&spheres, &terre);
         addSphere(&spheres, &mirroir);
 
         vector<Lampe> lampes;
