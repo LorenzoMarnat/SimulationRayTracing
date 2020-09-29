@@ -49,7 +49,7 @@ public:
 
 	Couleur(float _red, float _green, float _blue, float _alpha)
 	{
-		CheckColors(&_red, &_green, &_blue, &_alpha);
+		//CheckColors(&_red, &_green, &_blue, &_alpha);
 		red = _red;
 		green = _green;
 		blue = _blue;
@@ -57,7 +57,7 @@ public:
 	}
 	Couleur(float _red, float _green, float _blue)
 	{
-		CheckColors(&_red, &_green, &_blue);
+		//CheckColors(&_red, &_green, &_blue);
 		red = _red;
 		green = _green;
 		blue = _blue;

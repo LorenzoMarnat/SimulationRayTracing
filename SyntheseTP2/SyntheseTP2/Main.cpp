@@ -18,6 +18,45 @@ void encodeOneStep(const char* filename, std::vector<unsigned char>& image, unsi
     if (error) std::cout << "encoder error " << error << ": " << lodepng_error_text(error) << std::endl;
 }
 
+void normalizeColor(vector<unsigned char>* imageOut, vector<double>* image)
+{
+    double maxRed = 0;
+    double maxGreen = 0;
+    double maxBlue = 0;
+    for (int i = 0; i < image->size(); i += 4)
+    {
+        if (image->at(i) > maxRed)
+            maxRed = image->at(i);
+
+        if (image->at(i+1) > maxGreen)
+            maxGreen = image->at(i+1);
+
+        if (image->at(i+2) > maxBlue)
+            maxBlue = image->at(i+2);
+    }
+    for (int i = 0; i < image->size(); i += 4)
+    {
+         imageOut->at(i) = (int)((image->at(i) / maxRed) * 255);
+
+         imageOut->at(i+1) = (int)((image->at(i+1) / maxGreen) * 255);
+
+         imageOut->at(i+2) = (int)((image->at(i+2) / maxBlue) * 255);
+
+         imageOut->at(i+3) = image->at(i+3);
+    }
+
+}
+void color(vector<double>* img, int index, Couleur couleur)
+{
+    img->at(index) += couleur.red;
+
+    img->at(index + 1) += couleur.green;
+
+    img->at(index + 2) += couleur.blue;
+
+    img->at(index + 3) = couleur.alpha;
+}
+
 void color(vector<unsigned char>* img, int index, Couleur couleur)
 {
     
@@ -112,7 +151,7 @@ int intersectSpheres(Rayon r, vector<Sphere*> spheres, float* distance)
     return intersect;
 }
 
-void mirrorRebound(Vector3 intersection, Rayon rayon, vector<Sphere*> spheres, int intersectSphere, vector<unsigned char>* image, int index)
+void mirrorRebound(Vector3 intersection, Rayon rayon, vector<Sphere*> spheres, int intersectSphere, vector<double>* image, int index)
 {
     float minDistance;
 
@@ -148,7 +187,7 @@ void mirrorRebound(Vector3 intersection, Rayon rayon, vector<Sphere*> spheres, i
     }
 }
 
-void intersectLamps(Vector3 intersection,vector<Lampe> lamps,vector<Sphere*> spheres, int intersectSphere,vector<unsigned char> *image, int index)
+void intersectLamps(Vector3 intersection,vector<Lampe> lamps,vector<Sphere*> spheres, int intersectSphere,vector<double> *image, int index)
 {
     Couleur surface = Couleur(0,0,0);
 
@@ -179,10 +218,13 @@ int main(int argc, char* argv[]) {
 
         unsigned width = 1024, height = 1024;
          
-        vector<unsigned char> image;
+        vector<unsigned char> imageOut;
+        imageOut.resize(width * height * 4);
+
+        vector<double> image;
         image.resize(width * height * 4);
 
-        for(int i=0;i< width * height * 4;i++)
+        for (int i = 0; i < width * height * 4; i++)
             image[i] = 0;
 
         Camera camera = Camera(width, height, 1024, Vector3(0, 0, 0));
@@ -228,11 +270,11 @@ int main(int argc, char* argv[]) {
 
         vector<Lampe> lampes;
 
-        Lampe lampe1 = Lampe(Vector3(500, 500, 100), 60000000);
+        Lampe lampe1 = Lampe(Vector3(500, 500, 100), 200000000);
 
         Lampe lampe2 = Lampe(Vector3(-300, 400, 300), 90000000);
 
-        Lampe lampe3 = Lampe(Vector3(650, -100, 500), 80000000);
+        Lampe lampe3 = Lampe(Vector3(650, -100, 500), 90000000);
 
         addLampe(&lampes, lampe1);
         addLampe(&lampes, lampe2);
@@ -267,5 +309,6 @@ int main(int argc, char* argv[]) {
                 }
             }
         }
-        encodeOneStep(filename, image, width, height);
+        normalizeColor(&imageOut, &image);
+        encodeOneStep(filename, imageOut, width, height);
 }
