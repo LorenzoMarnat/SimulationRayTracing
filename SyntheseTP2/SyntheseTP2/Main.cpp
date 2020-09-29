@@ -150,8 +150,10 @@ void mirrorRebound(Vector3 intersection, Rayon rayon, vector<Sphere*> spheres, i
 
 void intersectLamps(Vector3 intersection,vector<Lampe> lamps,vector<Sphere*> spheres, int intersectSphere,vector<unsigned char> *image, int index)
 {
-    Couleur surface;
-    bool noIntersection = true;
+    Couleur surface = Couleur(0,0,0);
+
+    int nbIntersection = 0;
+
     for (Lampe lampe : lamps)
     {
         lampe.SetOrigin(intersection);
@@ -163,10 +165,10 @@ void intersectLamps(Vector3 intersection,vector<Lampe> lamps,vector<Sphere*> sph
             surface = colorOnSurface(lampe, spheres[intersectSphere]);
             color(image, index, surface);
 
-            noIntersection = false;
+            nbIntersection++;
         }
     }
-    if (noIntersection)
+    if (nbIntersection == 0)
     {
         color(image, index, Couleur(0, 0, 0));
     }

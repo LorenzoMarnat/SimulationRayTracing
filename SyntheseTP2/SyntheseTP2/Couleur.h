@@ -77,12 +77,33 @@ public:
 		blue = c.blue;
 		alpha = c.alpha;
 	}
+
+	Couleur operator+(Couleur c)
+	{
+		Couleur result;
+		result.red = red + c.red;
+		result.blue = blue + c.blue;
+		result.green = green + c.green;
+		result.alpha = alpha;
+		return result;
+	}
+
 	Couleur operator*(Couleur c)
 	{
 		Couleur result;
 		result.red = red * c.red;
 		result.blue = blue * c.blue;
 		result.green = green * c.green;
+		result.alpha = alpha;
+		return result;
+	}
+
+	Couleur operator/(int i)
+	{
+		Couleur result;
+		result.red = red / i;
+		result.blue = blue / i;
+		result.green = green / i;
 		result.alpha = alpha;
 		return result;
 	}
