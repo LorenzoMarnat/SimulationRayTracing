@@ -6,12 +6,13 @@
 #include <math.h>
 #include <iostream>
 #include <random>
-#include <ctime>
 
 #define PI 3.141593
 #define EPSILON -0.02
 
 using namespace std;
+default_random_engine gen;
+uniform_real_distribution<double> distribution(-0.01, 0.01);
 
 void encodeOneStep(const char* filename, std::vector<unsigned char>& image, unsigned width, unsigned height) {
     //Encode the image
@@ -19,6 +20,11 @@ void encodeOneStep(const char* filename, std::vector<unsigned char>& image, unsi
 
     //if there's an error, display it
     if (error) std::cout << "encoder error " << error << ": " << lodepng_error_text(error) << std::endl;
+}
+
+float randomFloat(float min, float max)
+{
+    return ((float)rand() / RAND_MAX) * (max - min) + min;
 }
 
 void normalizeColor(vector<unsigned char>* imageOut, vector<double>* image)
@@ -151,7 +157,7 @@ void intersectLamps(Vector3 intersection,vector<Lampe> lamps,vector<Sphere*> sph
     for (Lampe lampe : lamps)
     {
         lampe.SetOrigin(intersection);
-
+        lampe.SetDirection(Vector3(lampe.GetDirection().x + distribution(gen), lampe.GetDirection().y + distribution(gen), lampe.GetDirection().z + distribution(gen)));
         float distanceLampe;
         int idSphere = intersectSpheres(lampe, spheres, &distanceLampe);
         if (idSphere == -1 || distanceLampe > lampe.GetDistance())
@@ -194,23 +200,13 @@ void mirrorRebound(Vector3 intersection, Rayon rayon, vector<Lampe>* lamps, vect
         }
         else
         {
-
             intersectLamps(newIntersection, *lamps, *spheres, sphereIntersect, image, index);
-
-            /*Lampe lampe = Lampe(intersection, newIntersection, 30000000);
-            Couleur surface = colorOnSurface(lampe, spheres[sphereIntersect]);
-
-            color(image, index, surface);*/
         }
     }
     else
     {
         color(image, index, Couleur(100, 100, 100));
     }
-}
-float randomFloat(float min, float max) {
-
-    return ((float)rand() / RAND_MAX) * (max - min) + min;
 }
 
 void checkNormale(Vector3* n)
@@ -244,8 +240,6 @@ int main(int argc, char* argv[]) {
 
         for (int i = 0; i < width * height * 4; i++)
             image[i] = 0;
-
-        srand(time(NULL));
 
         Camera camera = Camera((float)width, (float)height, 1024, Vector3(0, 0, 0));
 
@@ -308,16 +302,16 @@ int main(int argc, char* argv[]) {
             for (int x = 0; x < width; x++) 
             {
                 float minDistance;
-
+                
                 Vector3 point = Vector3(camera.plan.x + x, camera.plan.y + y, camera.plan.z);
                 Vector3 normale = camera.Normale(point);
 
-                for (int i = 0; i < 3; i++)
+                for (int i = 0; i < 200; i++)
                 {
-                    Vector3 normaleRand = Vector3(normale.x + randomFloat(-0.01, 0.01), normale.y + randomFloat(-0.01, 0.01), normale.z + randomFloat(-0.01, 0.01));
+                    Vector3 normaleRand = Vector3(normale.x + distribution(gen), normale.y + distribution(gen), normale.z + distribution(gen));
                     checkNormale(&normaleRand);
-                    //Rayon rayon = Rayon(normaleRand, point);
-                    Rayon rayon = Rayon(normale, point);
+                    Rayon rayon = Rayon(normaleRand, point);
+                    //Rayon rayon = Rayon(normale, point);
                     int sphereIntersect = intersectSpheres(rayon, spheres, &minDistance);
                     if (sphereIntersect != -1)
                     {

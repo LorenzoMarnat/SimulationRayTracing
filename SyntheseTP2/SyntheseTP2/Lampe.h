@@ -54,6 +54,11 @@ public:
 
 	float GetDistance() { return distance; }
 
+	void SetDirection(Vector3 _direction)
+	{
+		direction = _direction;
+	}
+
 	void SetOrigin(Vector3 _origin)
 	{
 		Vector3 _direction = position - _origin;
