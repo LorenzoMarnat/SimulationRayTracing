@@ -253,7 +253,7 @@ int main(int argc, char* argv[]) {
 
         SphereCouleur bleu = SphereCouleur(200, Vector3(200, 450, 250),Couleur(0,0,1));
 
-        SphereCouleur vert = SphereCouleur(100, Vector3(850, 200, 150), Couleur(0, 1, 0));
+        SphereCouleur vert = SphereCouleur(100, Vector3(850, 350, 150), Couleur(0, 1, 0));
 
         SphereCouleur cyan = SphereCouleur(150, Vector3(800, 800, 180), Couleur(0, 1, 1));
 
@@ -271,7 +271,9 @@ int main(int argc, char* argv[]) {
 
         SphereCouleur murGauche = SphereCouleur(100000, Vector3(101000, 512, 512), Couleur(1, 0, 1));
 
-        Mirroir mirroir = Mirroir(200, Vector3(600, 500, 300), Couleur(1, 1, 1));
+        Mirroir mirroir = Mirroir(150, Vector3(600, 500, 300), Couleur(1, 1, 1));
+
+        Mirroir mirroir2 = Mirroir(100, Vector3(750, 100, 150), Couleur(1, 1, 1));
 
         addSphere(&spheres, &rouge);
         addSphere(&spheres, &bleu);
@@ -285,6 +287,7 @@ int main(int argc, char* argv[]) {
         addSphere(&spheres, &mur);
         addSphere(&spheres, &plafond);
         addSphere(&spheres, &mirroir);
+        addSphere(&spheres, &mirroir2);
 
         vector<Lampe> lampes;
 
