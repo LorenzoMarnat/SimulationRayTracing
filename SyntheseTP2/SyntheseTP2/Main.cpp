@@ -9,6 +9,7 @@
 #include <ctime>
 
 #define PI 3.141593
+#define EPSILON -0.02
 
 using namespace std;
 
@@ -184,7 +185,8 @@ void mirrorRebound(Vector3 intersection, Rayon rayon, vector<Lampe>* lamps, vect
     int sphereIntersect = intersectSpheres(rayonSortant, *spheres, &minDistance);
     if (sphereIntersect != -1)
     {
-        Vector3 newIntersection = Vector3(minDistance * normaleRayon.x + intersection.x, minDistance * normaleRayon.y + intersection.y, (float)(minDistance * normaleRayon.z + intersection.z - 0.02));
+        Vector3 newIntersection = Vector3(minDistance * normaleRayon.x + intersection.x, minDistance * normaleRayon.y + intersection.y, (float)(minDistance * normaleRayon.z + intersection.z));
+        newIntersection += directionRayon * EPSILON;
 
         if (spheres->at(sphereIntersect)->IsMirror() && rayonSortant.rebound < Rayon::maxRebound)
         {
@@ -310,16 +312,17 @@ int main(int argc, char* argv[]) {
                 Vector3 point = Vector3(camera.plan.x + x, camera.plan.y + y, camera.plan.z);
                 Vector3 normale = camera.Normale(point);
 
-                /*for (int i = 0; i < 5; i++)
+                for (int i = 0; i < 3; i++)
                 {
-                    Vector3 normaleRand = Vector3(normale.x + randomFloat(-0.003, 0.003), normale.y + randomFloat(-0.003, 0.003), normale.z + randomFloat(-0.003, 0.003));
+                    Vector3 normaleRand = Vector3(normale.x + randomFloat(-0.01, 0.01), normale.y + randomFloat(-0.01, 0.01), normale.z + randomFloat(-0.01, 0.01));
                     checkNormale(&normaleRand);
-                    Rayon rayon = Rayon(normaleRand, point);*/
-                Rayon rayon = Rayon(normale, point);
+                    //Rayon rayon = Rayon(normaleRand, point);
+                    Rayon rayon = Rayon(normale, point);
                     int sphereIntersect = intersectSpheres(rayon, spheres, &minDistance);
                     if (sphereIntersect != -1)
                     {
-                        Vector3 pointIntersection = Vector3(minDistance * normale.x + x + camera.plan.x, minDistance * normale.y + y + camera.plan.z, (float)(minDistance * normale.z + camera.plan.z - 0.02));
+                        Vector3 pointIntersection = Vector3(minDistance * normale.x + x + camera.plan.x, minDistance * normale.y + y + camera.plan.z, (float)(minDistance * normale.z + camera.plan.z));
+                        pointIntersection += normale * EPSILON;
                         if (!spheres[sphereIntersect]->IsMirror())
                         {
                             intersectLamps(pointIntersection, lampes, spheres, sphereIntersect, &image, 4 * width * y + 4 * x);
@@ -333,7 +336,7 @@ int main(int argc, char* argv[]) {
                     {
                         color(&image, 4 * width * y + 4 * x, Couleur(100, 100, 100));
                     }
-                //}
+                }
             }
         }
         normalizeColor(&imageOut, &image);
