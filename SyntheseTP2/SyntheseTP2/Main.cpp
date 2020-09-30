@@ -141,46 +141,6 @@ int intersectSpheres(Rayon r, vector<Sphere*> spheres, float* distance)
     return intersect;
 }
 
-void mirrorRebound(Vector3 intersection, Rayon rayon, vector<Lampe> lamps, vector<Sphere*> spheres, int intersectSphere, vector<double>* image, int index)
-{
-    float minDistance;
-
-    Vector3 normaleRayon = rayon.GetDirection();
-
-    Vector3 normaleSurface = intersection - spheres[intersectSphere]->GetCentre();
-    normaleSurface = normaleSurface.normalize();
-
-    Vector3 directionRayon = (-normaleRayon.dot(normaleSurface)) * normaleSurface * 2 + normaleRayon;
-
-    Rayon rayonSortant = Rayon(directionRayon, intersection);
-
-    rayonSortant.rebound = ++rayon.rebound;
-
-    int sphereIntersect = intersectSpheres(rayonSortant, spheres, &minDistance);
-    if (sphereIntersect != -1)
-    {
-        Vector3 newIntersection = Vector3(minDistance * normaleRayon.x + intersection.x, minDistance * normaleRayon.y + intersection.y, (float)(minDistance * normaleRayon.z + intersection.z - 0.02));
-
-        if (spheres[sphereIntersect]->IsMirror() && rayonSortant.rebound < Rayon::maxRebound)
-        {
-            mirrorRebound(newIntersection, rayonSortant, lamps, spheres, sphereIntersect, image, index);
-        }
-        else
-        {
-            intersectLamps(newIntersection,lamps,spheres,sphereIntersect,image,index);
-
-            /*Lampe lampe = Lampe(intersection, newIntersection, 30000000);
-            Couleur surface = colorOnSurface(lampe, spheres[sphereIntersect]);
-
-            color(image, index, surface);*/
-        }
-    }
-    else
-    {
-        color(image, index, Couleur(100, 100, 100));
-    }
-}
-
 void intersectLamps(Vector3 intersection,vector<Lampe> lamps,vector<Sphere*> spheres, int intersectSphere,vector<double> *image, int index)
 {
     Couleur surface = Couleur(0,0,0);
@@ -206,7 +166,46 @@ void intersectLamps(Vector3 intersection,vector<Lampe> lamps,vector<Sphere*> sph
         color(image, index, Couleur(0, 0, 0));
     }
 }
+void mirrorRebound(Vector3 intersection, Rayon rayon, vector<Lampe>* lamps, vector<Sphere*>* spheres, int intersectSphere, vector<double>* image, int index)
+{
+    float minDistance;
 
+    Vector3 normaleRayon = rayon.GetDirection();
+
+    Vector3 normaleSurface = intersection - spheres->at(intersectSphere)->GetCentre();
+    normaleSurface = normaleSurface.normalize();
+
+    Vector3 directionRayon = (-normaleRayon.dot(normaleSurface)) * normaleSurface * 2 + normaleRayon;
+
+    Rayon rayonSortant = Rayon(directionRayon, intersection);
+
+    rayonSortant.rebound = ++rayon.rebound;
+
+    int sphereIntersect = intersectSpheres(rayonSortant, *spheres, &minDistance);
+    if (sphereIntersect != -1)
+    {
+        Vector3 newIntersection = Vector3(minDistance * normaleRayon.x + intersection.x, minDistance * normaleRayon.y + intersection.y, (float)(minDistance * normaleRayon.z + intersection.z - 0.02));
+
+        if (spheres->at(sphereIntersect)->IsMirror() && rayonSortant.rebound < Rayon::maxRebound)
+        {
+            mirrorRebound(newIntersection, rayonSortant, lamps, spheres, sphereIntersect, image, index);
+        }
+        else
+        {
+
+            intersectLamps(newIntersection, *lamps, *spheres, sphereIntersect, image, index);
+
+            /*Lampe lampe = Lampe(intersection, newIntersection, 30000000);
+            Couleur surface = colorOnSurface(lampe, spheres[sphereIntersect]);
+
+            color(image, index, surface);*/
+        }
+    }
+    else
+    {
+        color(image, index, Couleur(100, 100, 100));
+    }
+}
 float randomFloat(float min, float max) {
 
     return ((float)rand() / RAND_MAX) * (max - min) + min;
@@ -256,7 +255,7 @@ int main(int argc, char* argv[]) {
 
         SphereCouleur vert = SphereCouleur(100, Vector3(850, 200, 150), Couleur(0, 1, 0));
 
-        SphereCouleur cyan = SphereCouleur(150, Vector3(800, 800, 200), Couleur(0, 1, 1));
+        SphereCouleur cyan = SphereCouleur(150, Vector3(800, 800, 180), Couleur(0, 1, 1));
 
         SphereCouleur jaune = SphereCouleur(100, Vector3(0, 800, 300), Couleur(1, 1, 0));
 
@@ -272,7 +271,7 @@ int main(int argc, char* argv[]) {
 
         SphereCouleur murGauche = SphereCouleur(100000, Vector3(101000, 512, 512), Couleur(1, 0, 1));
 
-        Mirroir mirroir = Mirroir(200, Vector3(600, 500, 500), Couleur(1, 1, 1));
+        Mirroir mirroir = Mirroir(200, Vector3(600, 500, 300), Couleur(1, 1, 1));
 
         addSphere(&spheres, &rouge);
         addSphere(&spheres, &bleu);
@@ -324,7 +323,7 @@ int main(int argc, char* argv[]) {
                         }
                         else
                         {
-                            mirrorRebound(pointIntersection, rayon,lampes, spheres, sphereIntersect, &image, 4 * width * y + 4 * x);
+                            mirrorRebound(pointIntersection, rayon,&lampes, &spheres, sphereIntersect, &image, 4 * width * y + 4 * x);
                         }
                     }
                     else
