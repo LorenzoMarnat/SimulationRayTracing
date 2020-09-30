@@ -247,7 +247,7 @@ int main(int argc, char* argv[]) {
 
         SphereCouleur rouge = SphereCouleur(200, Vector3(200, 0, 350),Couleur(1,0,0));
 
-        SphereCouleur bleu = SphereCouleur(200, Vector3(200, 450, 250),Couleur(0,0,1));
+        SphereCouleur bleu = SphereCouleur(200, Vector3(200, 750, 250),Couleur(0,0,1));
 
         SphereCouleur vert = SphereCouleur(100, Vector3(850, 350, 150), Couleur(0, 1, 0));
 
@@ -275,7 +275,7 @@ int main(int argc, char* argv[]) {
         addSphere(&spheres, &bleu);
         addSphere(&spheres, &vert);
         addSphere(&spheres, &cyan);
-        addSphere(&spheres, &jaune);
+        //addSphere(&spheres, &jaune);
         addSphere(&spheres, &sol);
         addSphere(&spheres, &murDroite);
         addSphere(&spheres, &murFond);
@@ -306,7 +306,7 @@ int main(int argc, char* argv[]) {
                 Vector3 point = Vector3(camera.plan.x + x, camera.plan.y + y, camera.plan.z);
                 Vector3 normale = camera.Normale(point);
 
-                for (int i = 0; i < 200; i++)
+                for (int i = 0; i < 500; i++)
                 {
                     Vector3 normaleRand = Vector3(normale.x + distribution(gen), normale.y + distribution(gen), normale.z + distribution(gen));
                     checkNormale(&normaleRand);
