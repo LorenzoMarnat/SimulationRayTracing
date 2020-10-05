@@ -13,6 +13,7 @@
 using namespace std;
 default_random_engine gen;
 uniform_real_distribution<double> distribution(-0.01, 0.01);
+uniform_real_distribution<double> distributionLamp(-0.1, 0.1);
 
 void encodeOneStep(const char* filename, std::vector<unsigned char>& image, unsigned width, unsigned height) {
     //Encode the image
@@ -156,16 +157,19 @@ void intersectLamps(Vector3 intersection,vector<Lampe> lamps,vector<Sphere*> sph
 
     for (Lampe lampe : lamps)
     {
-        lampe.SetOrigin(intersection);
-        lampe.SetDirection(Vector3(lampe.GetDirection().x + distribution(gen), lampe.GetDirection().y + distribution(gen), lampe.GetDirection().z + distribution(gen)));
-        float distanceLampe;
-        int idSphere = intersectSpheres(lampe, spheres, &distanceLampe);
-        if (idSphere == -1 || distanceLampe > lampe.GetDistance())
+        for (int i = 0; i < 10; i++)
         {
-            surface = colorOnSurface(lampe, spheres[intersectSphere]);
-            color(image, index, surface);
+            lampe.SetOrigin(intersection);
+            lampe.SetDirection(Vector3(lampe.GetDirection().x + distributionLamp(gen), lampe.GetDirection().y + distributionLamp(gen), lampe.GetDirection().z + distributionLamp(gen)));
+            float distanceLampe;
+            int idSphere = intersectSpheres(lampe, spheres, &distanceLampe);
+            if (idSphere == -1 || distanceLampe > lampe.GetDistance())
+            {
+                surface = colorOnSurface(lampe, spheres[intersectSphere]);
+                color(image, index, surface);
 
-            nbIntersection++;
+                nbIntersection++;
+            }
         }
     }
     if (nbIntersection == 0)
@@ -267,7 +271,7 @@ int main(int argc, char* argv[]) {
 
         SphereCouleur murGauche = SphereCouleur(100000, Vector3(101000, 512, 512), Couleur(1, 0, 1));
 
-        Mirroir mirroir = Mirroir(150, Vector3(600, 500, 300), Couleur(1, 1, 1));
+        Mirroir mirroir = Mirroir(150, Vector3(600, 450, 300), Couleur(1, 1, 1));
 
         Mirroir mirroir2 = Mirroir(100, Vector3(750, 100, 150), Couleur(1, 1, 1));
 
@@ -283,7 +287,7 @@ int main(int argc, char* argv[]) {
         addSphere(&spheres, &mur);
         addSphere(&spheres, &plafond);
         addSphere(&spheres, &mirroir);
-        addSphere(&spheres, &mirroir2);
+        //addSphere(&spheres, &mirroir2);
 
         vector<Lampe> lampes;
 
@@ -306,7 +310,7 @@ int main(int argc, char* argv[]) {
                 Vector3 point = Vector3(camera.plan.x + x, camera.plan.y + y, camera.plan.z);
                 Vector3 normale = camera.Normale(point);
 
-                for (int i = 0; i < 500; i++)
+                for (int i = 0; i < 50; i++)
                 {
                     Vector3 normaleRand = Vector3(normale.x + distribution(gen), normale.y + distribution(gen), normale.z + distribution(gen));
                     checkNormale(&normaleRand);
