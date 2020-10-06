@@ -4,6 +4,7 @@
 #include "Lampe.h"
 #include "Camera.h"
 #include "Boite.h"
+#include "Tree.h"
 #include <math.h>
 #include <iostream>
 #include <random>
@@ -15,6 +16,23 @@ using namespace std;
 default_random_engine gen;
 uniform_real_distribution<double> distribution(-0.01, 0.01);
 uniform_real_distribution<double> distributionLamp(-0.1, 0.1);
+
+struct BoxTree {
+	vector<Boite> boxes;
+	Boite box;
+	BoxTree* left;
+	BoxTree* right;
+};
+
+struct BoxTree* NewBoxTree(vector<Boite> boxes,Boite box) {
+	struct BoxTree* boxTree = new struct BoxTree();
+	boxTree->box = Boite(box.min, box.max);
+	boxTree->boxes = boxes;
+
+	boxTree->left = NULL;
+	boxTree->right = NULL;
+	return boxTree;
+};
 
 void encodeOneStep(const char* filename, std::vector<unsigned char>& image, unsigned width, unsigned height) {
 	//Encode the image
@@ -118,13 +136,13 @@ bool raySphereIntersect(Rayon r, Sphere* s, float* distance) {
 	return intersect;
 }
 
-int intersectSpheres(Rayon r, vector<Sphere*> spheres, float* distance)
+int intersectSpheres(Rayon r, vector<Sphere> spheres, float* distance)
 {
 	int intersect = -1;
 	for (int i = 0; i < (int)spheres.size(); i++)
 	{
 		float minDistance;
-		bool inteSphere = raySphereIntersect(r, spheres[i], &minDistance);
+		bool inteSphere = raySphereIntersect(r, &spheres[i], &minDistance);
 		if (inteSphere)
 		{
 			if (intersect == -1)
@@ -145,15 +163,15 @@ int intersectSpheres(Rayon r, vector<Sphere*> spheres, float* distance)
 	return intersect;
 }
 
-bool rayBoxIntersect(Rayon ray,Boite box, float* t)
+bool rayBoxIntersect(Rayon ray, Boite box, float* t)
 {
 	Vector3 dirfrac = Vector3(1 / ray.GetDirection().x, 1 / ray.GetDirection().y, 1 / ray.GetDirection().z);
-	float t1 = (box.p1.x - ray.GetOrigin().x) * dirfrac.x;
-	float t2 = (box.p2.x - ray.GetOrigin().x) * dirfrac.x;
-	float t3 = (box.p1.y - ray.GetOrigin().y) * dirfrac.y;
-	float t4 = (box.p2.y - ray.GetOrigin().y) * dirfrac.y;
-	float t5 = (box.p1.z - ray.GetOrigin().z) * dirfrac.z;
-	float t6 = (box.p2.z - ray.GetOrigin().z) * dirfrac.z;
+	float t1 = (box.min.x - ray.GetOrigin().x) * dirfrac.x;
+	float t2 = (box.max.x - ray.GetOrigin().x) * dirfrac.x;
+	float t3 = (box.min.y - ray.GetOrigin().y) * dirfrac.y;
+	float t4 = (box.max.y - ray.GetOrigin().y) * dirfrac.y;
+	float t5 = (box.min.z - ray.GetOrigin().z) * dirfrac.z;
+	float t6 = (box.max.z - ray.GetOrigin().z) * dirfrac.z;
 
 	float tmin = max(max(min(t1, t2), min(t3, t4)), min(t5, t6));
 	float tmax = min(min(max(t1, t2), max(t3, t4)), max(t5, t6));
@@ -202,7 +220,7 @@ int intersectBoxes(Rayon r, vector<Boite> boxes, float* distance)
 	return intersect;
 }
 
-void intersectLamps(Vector3 intersection, vector<Lampe> lamps, vector<Sphere*> spheres, int intersectSphere, vector<double>* image, int index)
+void intersectLamps(Vector3 intersection, vector<Lampe> lamps, vector<Sphere> spheres, int intersectSphere, vector<double>* image, int index)
 {
 	Couleur surface = Couleur(0, 0, 0);
 
@@ -218,7 +236,7 @@ void intersectLamps(Vector3 intersection, vector<Lampe> lamps, vector<Sphere*> s
 		int idSphere = intersectSpheres(lampe, spheres, &distanceLampe);
 		if (idSphere == -1 || distanceLampe > lampe.GetDistance())
 		{
-			surface = colorOnSurface(lampe, spheres[intersectSphere]);
+			surface = colorOnSurface(lampe, &spheres[intersectSphere]);
 			color(image, index, surface);
 
 			nbIntersection++;
@@ -230,7 +248,7 @@ void intersectLamps(Vector3 intersection, vector<Lampe> lamps, vector<Sphere*> s
 		color(image, index, Couleur(0, 0, 0));
 	}
 }
-void mirrorRebound(Vector3 intersection, Rayon rayon, vector<Lampe>* lamps, vector<Sphere*>* spheres, int intersectSphere, vector<double>* image, int index)
+/*void mirrorRebound(Vector3 intersection, Rayon rayon, vector<Lampe>* lamps, vector<Sphere*>* spheres, int intersectSphere, vector<double>* image, int index)
 {
 	float minDistance;
 
@@ -264,7 +282,7 @@ void mirrorRebound(Vector3 intersection, Rayon rayon, vector<Lampe>* lamps, vect
 	{
 		color(image, index, Couleur(0, 0, 0));
 	}
-}
+}*/
 
 void checkNormale(Vector3* n)
 {
@@ -284,7 +302,6 @@ void checkNormale(Vector3* n)
 		n->z = -1;
 }
 
-
 float RandomFloat(float a, float b) {
 	float random = ((float)rand()) / (float)RAND_MAX;
 	float diff = b - a;
@@ -292,10 +309,48 @@ float RandomFloat(float a, float b) {
 	return a + r;
 }
 
-void sphereToBox(vector<Boite>* b, Sphere* s)
+void sphereToBox(vector<Boite>* b, Sphere s)
 {
-	Boite box = Boite(*s);
+	Boite box = Boite(s);
 	b->push_back(box);
+}
+
+bool pointInBox(Vector3 p, Boite box)
+{
+	if (p.x >= box.min.x && p.x <= box.max.x && p.y >= box.min.y && p.y <= box.max.y && p.z >= box.min.z && p.z <= box.max.z)
+		return true;
+	return false;
+}
+
+void dichotomie(BoxTree tree)
+{
+
+	vector<Boite> left;
+	Boite leftBox = Boite(tree.box.min, Vector3(tree.box.centre.x, tree.box.max.y, tree.box.max.z));
+	//*tree.left = Tree(left, Boite(tree.box.min, Vector3(tree.box.centre.x, tree.box.max.y, tree.box.max.z)));
+	//tree.left->box = Boite(tree.box.min, Vector3(tree.box.centre.x, tree.box.max.y, tree.box.max.z));
+
+	vector<Boite> right;
+	Boite rightBox = Boite(Vector3(tree.box.centre.x, tree.box.min.y, tree.box.min.z), tree.box.max);
+	//*tree.right = Tree(right, Boite(Vector3(tree.box.centre.x, tree.box.min.y, tree.box.min.z), tree.box.max));
+	//tree.right->box = Boite(Vector3(tree.box.centre.x, tree.box.min.y, tree.box.min.z), tree.box.max);
+
+	for (int i = 0; i < tree.boxes.size(); i++)
+	{
+
+		if (pointInBox(tree.boxes[i].centre, leftBox))
+			left.push_back(tree.boxes[i]);
+		else
+			if (pointInBox(tree.boxes[i].centre, rightBox))
+				right.push_back(tree.boxes[i]);
+	}
+	//BoxTree leftT = Tree(&left, leftBox);
+	struct BoxTree* leftT = NewBoxTree(left, leftBox);
+	tree.left = leftT;
+
+	struct BoxTree* rightT = NewBoxTree(right, rightBox);
+	tree.right = rightT;
+	//tree.right = Tree(&right, rightBox);
 }
 
 int main(int argc, char* argv[]) {
@@ -314,18 +369,18 @@ int main(int argc, char* argv[]) {
 
 	Camera camera = Camera((float)width, (float)height, 1024, Vector3(0, 0, 0));
 
-	vector<Sphere*> spheres;
+	//vector<Sphere*> spheres;
 
-	SphereCouleur rouge = SphereCouleur(200, Vector3(200, 0, 350),Couleur(1,0,0));
-	
-	SphereCouleur bleu = SphereCouleur(200, Vector3(200, 750, 350),Couleur(0,0,1));
+	SphereCouleur rouge = SphereCouleur(200, Vector3(200, 0, 350), Couleur(1, 0, 0));
+
+	SphereCouleur bleu = SphereCouleur(200, Vector3(200, 750, 350), Couleur(0, 0, 1));
 
 	SphereCouleur vert = SphereCouleur(100, Vector3(850, 350, 150), Couleur(0, 1, 0));
 
 	SphereCouleur cyan = SphereCouleur(150, Vector3(800, 800, 180), Couleur(0, 1, 1));
 
 	SphereCouleur jaune = SphereCouleur(100, Vector3(0, 800, 120), Couleur(1, 1, 0));
-	
+
 	SphereCouleur sol = SphereCouleur(100000, Vector3(512, 101000, 500), Couleur(1, 0, 1));
 
 	SphereCouleur mur = SphereCouleur(100000, Vector3(512, 512, -100200), Couleur(1, 0, 1));
@@ -341,12 +396,12 @@ int main(int argc, char* argv[]) {
 	Mirroir mirroir = Mirroir(150, Vector3(600, 450, 300), Couleur(1, 1, 1));
 
 	Mirroir mirroir2 = Mirroir(100, Vector3(750, 100, 150), Couleur(1, 1, 1));
-	
-	addSphere(&spheres, &rouge);
+
+	/*addSphere(&spheres, &rouge);
 	addSphere(&spheres, &bleu);
 	addSphere(&spheres, &vert);
 	addSphere(&spheres, &cyan);
-	addSphere(&spheres, &jaune);
+	addSphere(&spheres, &jaune);*/
 
 	/*addSphere(&spheres, &sol);
 	addSphere(&spheres, &murDroite);
@@ -357,30 +412,52 @@ int main(int argc, char* argv[]) {
 
 	//addSphere(&spheres, &mirroir);
 	//addSphere(&spheres, &mirroir2);
-	
-	/*for (int i = 0; i < 10; i++)
-	{
-		SphereCouleur sphere = SphereCouleur(100, Vector3(RandomFloat(0,900), RandomFloat(0,900), 180), Couleur(1, 1, 1));
-		addSphere(&spheres, &sphere);
-	}*/
+
 	vector<Lampe> lampes;
 
 	Lampe lampe1 = Lampe(Vector3(500, 500, 100), 90000000);
 
-	Lampe lampe2 = Lampe(Vector3(-300, 400, 300), 90000000);
+	Lampe lampe2 = Lampe(Vector3(100, 400, 100), 90000000);
 
-	Lampe lampe3 = Lampe(Vector3(650, -100, 200), 90000000);
+	Lampe lampe3 = Lampe(Vector3(650, -100, 100), 90000000);
 
 	addLampe(&lampes, lampe1);
 	addLampe(&lampes, lampe2);
 	addLampe(&lampes, lampe3);
 
+
+
 	vector<Boite> boxes;
-	sphereToBox(&boxes, &rouge);
-	sphereToBox(&boxes, &bleu);
-	sphereToBox(&boxes, &vert);
-	sphereToBox(&boxes, &cyan);
-	sphereToBox(&boxes, &jaune);
+	vector<Sphere> spheres;
+
+	for (int i = 0; i < 1000; i++)
+	{
+		SphereCouleur sphere = SphereCouleur(10, Vector3(RandomFloat(0, 1000), RandomFloat(0, 1000), RandomFloat(0, 1000)), Couleur(RandomFloat(0.1, 1), RandomFloat(0.1, 1), RandomFloat(0.1, 1)));
+		spheres.push_back(sphere);
+		//addSphere(&spheres, &sphere);
+		sphereToBox(&boxes, sphere);
+	}
+
+	Boite scene = Boite(Vector3(0, 0, 0), Vector3(1000, 1000, 1000));
+
+	struct BoxTree* boxTree = NewBoxTree(boxes, scene);
+	//Tree tree = Tree(&boxes,scene);
+
+	dichotomie(*boxTree);
+
+	cout << boxTree->left->box.centre.x << endl;
+	cout << boxTree->left->box.centre.y << endl;
+	cout << boxTree->left->box.centre.z << endl;
+
+	/*cout << tree.right->box.centre.x << endl;
+	cout << tree.right->box.centre.y << endl;
+	cout << tree.right->box.centre.z << endl;
+
+	cout << tree.box.centre.x << endl;
+	cout << tree.box.centre.y << endl;
+	cout << tree.box.centre.z << endl;*/
+
+
 
 	for (int y = 0; y < width; y++)
 	{
@@ -398,7 +475,7 @@ int main(int argc, char* argv[]) {
 				//Rayon rayon = Rayon(normaleRand, point);
 				Rayon rayon = Rayon(normale, point);
 				//int sphereIntersect = intersectSpheres(rayon, spheres, &minDistance);
-				int sphereIntersect = intersectBoxes(rayon, boxes, &minDistance);
+				int sphereIntersect = intersectBoxes(rayon, boxTree->boxes, &minDistance);
 				if (sphereIntersect != -1)
 				{
 					color(&image, 4 * width * y + 4 * x, boxes[sphereIntersect].albedo);
@@ -420,7 +497,7 @@ int main(int argc, char* argv[]) {
 			}
 		}
 	}
-	
+
 	normalizeColor(&imageOut, &image);
 	encodeOneStep(filename, imageOut, width, height);
 }
