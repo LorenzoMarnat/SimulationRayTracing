@@ -20,8 +20,8 @@ uniform_real_distribution<double> distributionLamp(-0.1, 0.1);
 struct BoxTree {
 	vector<Boite> boxes;
 	Boite box;
-	BoxTree* left;
-	BoxTree* right;
+	BoxTree* left = NULL;
+	BoxTree* right = NULL;
 };
 
 struct BoxTree* NewBoxTree(vector<Boite> boxes,Boite box) {
@@ -322,13 +322,22 @@ bool pointInBox(Vector3 p, Boite box)
 	return false;
 }
 
-void dichotomie(struct BoxTree* tree)
+void dichotomie(struct BoxTree* tree, int nbCoupe,bool vertical)
 {
+
 	vector<Boite> left;
-	Boite leftBox = Boite(tree->box.min, Vector3(tree->box.centre.x, tree->box.max.y, tree->box.max.z));
+	Boite leftBox;
+	if(vertical)
+		leftBox = Boite(tree->box.min, Vector3(tree->box.centre.x, tree->box.max.y, tree->box.max.z));
+	else
+		leftBox = Boite(tree->box.min, Vector3(tree->box.max.x, tree->box.centre.y, tree->box.max.z));
 
 	vector<Boite> right;
-	Boite rightBox = Boite(Vector3(tree->box.centre.x, tree->box.min.y, tree->box.min.z), tree->box.max);
+	Boite rightBox;
+	if(vertical)
+		rightBox = Boite(Vector3(tree->box.centre.x, tree->box.min.y, tree->box.min.z), tree->box.max);
+	else
+		rightBox = Boite(Vector3(tree->box.min.x, tree->box.centre.y, tree->box.min.z), tree->box.max);
 
 	for (int i = 0; i < (int)tree->boxes.size(); i++)
 	{
@@ -343,6 +352,11 @@ void dichotomie(struct BoxTree* tree)
 	tree->left = NewBoxTree(left, leftBox);
 
 	tree->right = NewBoxTree(right, rightBox);
+	if (nbCoupe < 10)
+	{
+		dichotomie(tree->left, nbCoupe + 1,!vertical);
+		dichotomie(tree->right, nbCoupe + 1,!vertical);
+	}
 }
 
 int main(int argc, char* argv[]) {
@@ -433,9 +447,8 @@ int main(int argc, char* argv[]) {
 	Boite scene = Boite(Vector3(0, 0, 0), Vector3(1000, 1000, 1000));
 
 	struct BoxTree* boxTree = NewBoxTree(boxes, scene);
-	//Tree tree = Tree(&boxes,scene);
 
-	dichotomie(boxTree);
+	dichotomie(boxTree,0,true);
 
 	for (int y = 0; y < width; y++)
 	{
@@ -453,7 +466,7 @@ int main(int argc, char* argv[]) {
 				//Rayon rayon = Rayon(normaleRand, point);
 				Rayon rayon = Rayon(normale, point);
 				//int sphereIntersect = intersectSpheres(rayon, spheres, &minDistance);
-				int sphereIntersect = intersectBoxes(rayon, boxTree->right->boxes, &minDistance);
+				int sphereIntersect = intersectBoxes(rayon, boxTree->right->left->boxes, &minDistance);
 				if (sphereIntersect != -1)
 				{
 					color(&image, 4 * width * y + 4 * x, boxes[sphereIntersect].albedo);
