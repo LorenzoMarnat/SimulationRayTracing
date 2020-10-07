@@ -139,6 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Boite.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Couleur.cpp" />
     <ClCompile Include="Lampe.cpp" />
@@ -146,15 +147,18 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Rayon.cpp" />
     <ClCompile Include="Sphere.cpp" />
+    <ClCompile Include="Tree.cpp" />
     <ClCompile Include="vector3.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Boite.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Couleur.h" />
     <ClInclude Include="Lampe.h" />
     <ClInclude Include="lodepng.h" />
     <ClInclude Include="Rayon.h" />
     <ClInclude Include="Sphere.h" />
+    <ClInclude Include="Tree.h" />
     <ClInclude Include="vector3.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -322,35 +322,27 @@ bool pointInBox(Vector3 p, Boite box)
 	return false;
 }
 
-void dichotomie(BoxTree tree)
+void dichotomie(struct BoxTree* tree)
 {
-
 	vector<Boite> left;
-	Boite leftBox = Boite(tree.box.min, Vector3(tree.box.centre.x, tree.box.max.y, tree.box.max.z));
-	//*tree.left = Tree(left, Boite(tree.box.min, Vector3(tree.box.centre.x, tree.box.max.y, tree.box.max.z)));
-	//tree.left->box = Boite(tree.box.min, Vector3(tree.box.centre.x, tree.box.max.y, tree.box.max.z));
+	Boite leftBox = Boite(tree->box.min, Vector3(tree->box.centre.x, tree->box.max.y, tree->box.max.z));
 
 	vector<Boite> right;
-	Boite rightBox = Boite(Vector3(tree.box.centre.x, tree.box.min.y, tree.box.min.z), tree.box.max);
-	//*tree.right = Tree(right, Boite(Vector3(tree.box.centre.x, tree.box.min.y, tree.box.min.z), tree.box.max));
-	//tree.right->box = Boite(Vector3(tree.box.centre.x, tree.box.min.y, tree.box.min.z), tree.box.max);
+	Boite rightBox = Boite(Vector3(tree->box.centre.x, tree->box.min.y, tree->box.min.z), tree->box.max);
 
-	for (int i = 0; i < tree.boxes.size(); i++)
+	for (int i = 0; i < (int)tree->boxes.size(); i++)
 	{
 
-		if (pointInBox(tree.boxes[i].centre, leftBox))
-			left.push_back(tree.boxes[i]);
+		if (pointInBox(tree->boxes[i].centre, leftBox))
+			left.push_back(tree->boxes[i]);
 		else
-			if (pointInBox(tree.boxes[i].centre, rightBox))
-				right.push_back(tree.boxes[i]);
+			if (pointInBox(tree->boxes[i].centre, rightBox))
+				right.push_back(tree->boxes[i]);
 	}
-	//BoxTree leftT = Tree(&left, leftBox);
-	struct BoxTree* leftT = NewBoxTree(left, leftBox);
-	tree.left = leftT;
 
-	struct BoxTree* rightT = NewBoxTree(right, rightBox);
-	tree.right = rightT;
-	//tree.right = Tree(&right, rightBox);
+	tree->left = NewBoxTree(left, leftBox);
+
+	tree->right = NewBoxTree(right, rightBox);
 }
 
 int main(int argc, char* argv[]) {
@@ -443,21 +435,7 @@ int main(int argc, char* argv[]) {
 	struct BoxTree* boxTree = NewBoxTree(boxes, scene);
 	//Tree tree = Tree(&boxes,scene);
 
-	dichotomie(*boxTree);
-
-	cout << boxTree->left->box.centre.x << endl;
-	cout << boxTree->left->box.centre.y << endl;
-	cout << boxTree->left->box.centre.z << endl;
-
-	/*cout << tree.right->box.centre.x << endl;
-	cout << tree.right->box.centre.y << endl;
-	cout << tree.right->box.centre.z << endl;
-
-	cout << tree.box.centre.x << endl;
-	cout << tree.box.centre.y << endl;
-	cout << tree.box.centre.z << endl;*/
-
-
+	dichotomie(boxTree);
 
 	for (int y = 0; y < width; y++)
 	{
@@ -475,7 +453,7 @@ int main(int argc, char* argv[]) {
 				//Rayon rayon = Rayon(normaleRand, point);
 				Rayon rayon = Rayon(normale, point);
 				//int sphereIntersect = intersectSpheres(rayon, spheres, &minDistance);
-				int sphereIntersect = intersectBoxes(rayon, boxTree->boxes, &minDistance);
+				int sphereIntersect = intersectBoxes(rayon, boxTree->right->boxes, &minDistance);
 				if (sphereIntersect != -1)
 				{
 					color(&image, 4 * width * y + 4 * x, boxes[sphereIntersect].albedo);
