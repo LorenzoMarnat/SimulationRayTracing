@@ -315,9 +315,9 @@ float RandomFloat(float a, float b) {
 	return a + r;
 }
 
-void sphereToBox(vector<Boite>* b, Sphere* s, int idSphere)
+void sphereToBox(vector<Boite>* b, Sphere* s)
 {
-	Boite box = Boite(s,idSphere);
+	Boite box = Boite(s);
 	b->push_back(box);
 }
 
@@ -380,15 +380,16 @@ void intersectTree(struct BoxTree* tree, Rayon ray, int depth, vector<double>* i
 				int inter = intersectSpheres(ray, *intersectedSpheres, &distanceSphere);
 				if (inter != -1)
 				{
+					int idSphere = intersectedSpheres->at(inter)->id;
 					/*Vector3 pointIntersection = Vector3(distanceSphere * ray.GetDirection().x + ray.GetOrigin().x, distanceSphere * ray.GetDirection().y + ray.GetOrigin().y, distanceSphere * ray.GetDirection().z + ray.GetOrigin().z);
 					pointIntersection += ray.GetDirection() * EPSILON;
-					if (!spheres->at(boxIntersect)->IsMirror())
+					if (!spheres->at(idSphere)->IsMirror())
 					{
-						intersectLamps(pointIntersection, *lamps, *spheres, boxIntersect, image, index);
+						intersectLamps(pointIntersection, *lamps, *spheres, idSphere, image, index);
 					}
 					else
 					{
-						mirrorRebound(pointIntersection, ray, lamps, spheres, boxIntersect, image, index);
+						mirrorRebound(pointIntersection, ray, lamps, spheres, idSphere, image, index);
 					}*/
 					color(image, index, intersectedSpheres->at(inter)->albedo);
 				}
@@ -487,11 +488,11 @@ int main(int argc, char* argv[]) {
 	vector<Boite> boxes;
 	vector<Sphere*>* spheres = new vector<Sphere*>();
 
-	for (int i = 0; i < 10000; i++)
+	for (int i = 0; i < 1000; i++)
 	{
-		SphereCouleur* sphere = new SphereCouleur(10, Vector3(RandomFloat(0, 1000), RandomFloat(0, 1000), RandomFloat(11, 1000)), Couleur(RandomFloat(0.1, 1), RandomFloat(0.1, 1), RandomFloat(0.1, 1)));
+		SphereCouleur* sphere = new SphereCouleur(10, Vector3(RandomFloat(0, 1000), RandomFloat(0, 1000), RandomFloat(11, 1000)), Couleur(RandomFloat(0.1, 1), RandomFloat(0.1, 1), RandomFloat(0.1, 1)),i);
 		spheres->push_back(sphere);
-		sphereToBox(&boxes, sphere,spheres->size()-1);
+		sphereToBox(&boxes, sphere);
 	}
 
 	Boite scene = Boite(Vector3(0, 0, 0), Vector3(1000, 1000, 1000));

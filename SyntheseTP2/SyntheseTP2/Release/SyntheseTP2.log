@@ -1,5 +1,4 @@
-﻿  Boite.cpp
-  Main.cpp
+﻿  Main.cpp
 C:\Users\lmarnat\Documents\GitHub\SimulationRayTracing\SyntheseTP2\SyntheseTP2\Main.cpp(29,48): warning C4316: 'BoxTree' : l'objet alloué sur le tas n'est peut-être pas aligné 16
 C:\Users\lmarnat\Documents\GitHub\SimulationRayTracing\SyntheseTP2\SyntheseTP2\Main.cpp(79,34): warning C4244: '=' : conversion de '_Ty' en '_Ty', perte possible de données
           with
@@ -15,15 +14,14 @@ C:\Users\lmarnat\Documents\GitHub\SimulationRayTracing\SyntheseTP2\SyntheseTP2\M
 C:\Users\lmarnat\Documents\GitHub\SimulationRayTracing\SyntheseTP2\SyntheseTP2\Main.cpp(240,101): warning C4244: 'argument' : conversion de 'double' en 'float', perte possible de données
 C:\Users\lmarnat\Documents\GitHub\SimulationRayTracing\SyntheseTP2\SyntheseTP2\Main.cpp(240,53): warning C4244: 'argument' : conversion de 'double' en 'float', perte possible de données
 C:\Users\lmarnat\Documents\GitHub\SimulationRayTracing\SyntheseTP2\SyntheseTP2\Main.cpp(276,46): warning C4305: 'argument' : troncation de 'double' à 'float'
-C:\Users\lmarnat\Documents\GitHub\SimulationRayTracing\SyntheseTP2\SyntheseTP2\Main.cpp(521,151): warning C4305: 'argument' : troncation de 'double' à 'float'
-C:\Users\lmarnat\Documents\GitHub\SimulationRayTracing\SyntheseTP2\SyntheseTP2\Main.cpp(521,172): warning C4305: 'argument' : troncation de 'double' à 'float'
-C:\Users\lmarnat\Documents\GitHub\SimulationRayTracing\SyntheseTP2\SyntheseTP2\Main.cpp(521,193): warning C4305: 'argument' : troncation de 'double' à 'float'
-C:\Users\lmarnat\Documents\GitHub\SimulationRayTracing\SyntheseTP2\SyntheseTP2\Main.cpp(521,196): warning C4316: 'SphereCouleur' : l'objet alloué sur le tas n'est peut-être pas aligné 16
-C:\Users\lmarnat\Documents\GitHub\SimulationRayTracing\SyntheseTP2\SyntheseTP2\Main.cpp(536,10): warning C4101: 'minDistance' : variable locale non référencée
-  Tree.cpp
+C:\Users\lmarnat\Documents\GitHub\SimulationRayTracing\SyntheseTP2\SyntheseTP2\Main.cpp(493,151): warning C4305: 'argument' : troncation de 'double' à 'float'
+C:\Users\lmarnat\Documents\GitHub\SimulationRayTracing\SyntheseTP2\SyntheseTP2\Main.cpp(493,172): warning C4305: 'argument' : troncation de 'double' à 'float'
+C:\Users\lmarnat\Documents\GitHub\SimulationRayTracing\SyntheseTP2\SyntheseTP2\Main.cpp(493,193): warning C4305: 'argument' : troncation de 'double' à 'float'
+C:\Users\lmarnat\Documents\GitHub\SimulationRayTracing\SyntheseTP2\SyntheseTP2\Main.cpp(493,198): warning C4316: 'SphereCouleur' : l'objet alloué sur le tas n'est peut-être pas aligné 16
+C:\Users\lmarnat\Documents\GitHub\SimulationRayTracing\SyntheseTP2\SyntheseTP2\Main.cpp(508,10): warning C4101: 'minDistance' : variable locale non référencée
   Génération de code en cours
-  42 of 570 functions ( 7.4%) were compiled, the rest were copied from previous compilation.
-    6 functions were new in current compilation
-    7 functions had inline decision re-evaluated but remain unchanged
+  1 of 573 functions ( 0.2%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    3 functions had inline decision re-evaluated but remain unchanged
   Fin de la génération du code
   SyntheseTP2.vcxproj -> C:\Users\lmarnat\Documents\GitHub\SimulationRayTracing\SyntheseTP2\Release\SyntheseTP2.exe

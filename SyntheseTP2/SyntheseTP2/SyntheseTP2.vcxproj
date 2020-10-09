@@ -145,8 +145,10 @@
     <ClCompile Include="Lampe.cpp" />
     <ClCompile Include="lodepng.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Mirroir.cpp" />
     <ClCompile Include="Rayon.cpp" />
     <ClCompile Include="Sphere.cpp" />
+    <ClCompile Include="SphereCouleur.cpp" />
     <ClCompile Include="Tree.cpp" />
     <ClCompile Include="vector3.cpp" />
   </ItemGroup>
@@ -156,8 +158,10 @@
     <ClInclude Include="Couleur.h" />
     <ClInclude Include="Lampe.h" />
     <ClInclude Include="lodepng.h" />
+    <ClInclude Include="Mirroir.h" />
     <ClInclude Include="Rayon.h" />
     <ClInclude Include="Sphere.h" />
+    <ClInclude Include="SphereCouleur.h" />
     <ClInclude Include="Tree.h" />
     <ClInclude Include="vector3.h" />
   </ItemGroup>
