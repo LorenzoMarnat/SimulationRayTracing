@@ -380,7 +380,7 @@ void intersectTree(struct BoxTree* tree, Rayon ray, int depth, vector<double>* i
 				{
 					/*Vector3 pointIntersection = Vector3(distanceSphere * ray.GetDirection().x + ray.GetOrigin().x, distanceSphere * ray.GetDirection().y + ray.GetOrigin().y, distanceSphere * ray.GetDirection().z + ray.GetOrigin().z);
 					pointIntersection += ray.GetDirection() * EPSILON;
-					if (!spheres->at(boxIntersect).IsMirror())
+					if (!spheres->at(boxIntersect)->IsMirror())
 					{
 						intersectLamps(pointIntersection, *lamps, *spheres, boxIntersect, image, index);
 					}
@@ -394,17 +394,6 @@ void intersectTree(struct BoxTree* tree, Rayon ray, int depth, vector<double>* i
 				{
 					color(image, index, Couleur(0, 0, 0));
 				}
-				//color(image, index, tree->boxes[boxIntersect].albedo);
-				/*Vector3 pointIntersection = Vector3(minDistance * ray.GetDirection().x +ray.GetOrigin().x, minDistance * ray.GetDirection().y + ray.GetOrigin().y, minDistance * ray.GetDirection().z + ray.GetOrigin().z);
-				pointIntersection += ray.GetDirection() * EPSILON;
-				if (!spheres->at(boxIntersect).IsMirror())
-				{
-					intersectLamps(pointIntersection, *lamps, *spheres, boxIntersect, image, index);
-				}
-				else
-				{
-					mirrorRebound(pointIntersection, ray, lamps, spheres, boxIntersect, image, index);
-				}*/
 			}
 			else
 			{
@@ -496,11 +485,10 @@ int main(int argc, char* argv[]) {
 	vector<Boite> boxes;
 	vector<Sphere*>* spheres = new vector<Sphere*>();
 
-	for (int i = 0; i < 100; i++)
+	for (int i = 0; i < 10000; i++)
 	{
-		SphereCouleur* sphere = new SphereCouleur(10, Vector3(RandomFloat(0, 1000), RandomFloat(0, 1000), RandomFloat(0, 1000)), Couleur(RandomFloat(0.1, 1), RandomFloat(0.1, 1), RandomFloat(0.1, 1)));
+		SphereCouleur* sphere = new SphereCouleur(10, Vector3(RandomFloat(0, 1000), RandomFloat(0, 1000), RandomFloat(11, 1000)), Couleur(RandomFloat(0.1, 1), RandomFloat(0.1, 1), RandomFloat(0.1, 1)));
 		spheres->push_back(sphere);
-		//addSphere(&spheres, &sphere);
 		sphereToBox(&boxes, *sphere,spheres->size()-1);
 	}
 

@@ -14,11 +14,11 @@ C:\Users\lmarnat\Documents\GitHub\SimulationRayTracing\SyntheseTP2\SyntheseTP2\M
 C:\Users\lmarnat\Documents\GitHub\SimulationRayTracing\SyntheseTP2\SyntheseTP2\Main.cpp(238,101): warning C4244: 'argument' : conversion de 'double' en 'float', perte possible de données
 C:\Users\lmarnat\Documents\GitHub\SimulationRayTracing\SyntheseTP2\SyntheseTP2\Main.cpp(238,53): warning C4244: 'argument' : conversion de 'double' en 'float', perte possible de données
 C:\Users\lmarnat\Documents\GitHub\SimulationRayTracing\SyntheseTP2\SyntheseTP2\Main.cpp(274,46): warning C4305: 'argument' : troncation de 'double' à 'float'
-C:\Users\lmarnat\Documents\GitHub\SimulationRayTracing\SyntheseTP2\SyntheseTP2\Main.cpp(501,150): warning C4305: 'argument' : troncation de 'double' à 'float'
-C:\Users\lmarnat\Documents\GitHub\SimulationRayTracing\SyntheseTP2\SyntheseTP2\Main.cpp(501,171): warning C4305: 'argument' : troncation de 'double' à 'float'
-C:\Users\lmarnat\Documents\GitHub\SimulationRayTracing\SyntheseTP2\SyntheseTP2\Main.cpp(501,192): warning C4305: 'argument' : troncation de 'double' à 'float'
-C:\Users\lmarnat\Documents\GitHub\SimulationRayTracing\SyntheseTP2\SyntheseTP2\Main.cpp(501,195): warning C4316: 'SphereCouleur' : l'objet alloué sur le tas n'est peut-être pas aligné 16
-C:\Users\lmarnat\Documents\GitHub\SimulationRayTracing\SyntheseTP2\SyntheseTP2\Main.cpp(517,10): warning C4101: 'minDistance' : variable locale non référencée
+C:\Users\lmarnat\Documents\GitHub\SimulationRayTracing\SyntheseTP2\SyntheseTP2\Main.cpp(490,151): warning C4305: 'argument' : troncation de 'double' à 'float'
+C:\Users\lmarnat\Documents\GitHub\SimulationRayTracing\SyntheseTP2\SyntheseTP2\Main.cpp(490,172): warning C4305: 'argument' : troncation de 'double' à 'float'
+C:\Users\lmarnat\Documents\GitHub\SimulationRayTracing\SyntheseTP2\SyntheseTP2\Main.cpp(490,193): warning C4305: 'argument' : troncation de 'double' à 'float'
+C:\Users\lmarnat\Documents\GitHub\SimulationRayTracing\SyntheseTP2\SyntheseTP2\Main.cpp(490,196): warning C4316: 'SphereCouleur' : l'objet alloué sur le tas n'est peut-être pas aligné 16
+C:\Users\lmarnat\Documents\GitHub\SimulationRayTracing\SyntheseTP2\SyntheseTP2\Main.cpp(505,10): warning C4101: 'minDistance' : variable locale non référencée
   Génération de code en cours
   1 of 556 functions ( 0.2%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
