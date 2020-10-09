@@ -197,8 +197,9 @@ bool rayBoxIntersect(Rayon ray, Boite box, float* t)
 	return true;
 }
 
-int intersectBoxes(Rayon r, vector<Boite> boxes, float* distance)
+vector<Sphere*>* intersectBoxes(Rayon r, vector<Boite> boxes, float* distance)
 {
+	vector<Sphere*>* intersectedSpheres = new vector<Sphere*>();
 	int intersect = -1;
 	for (int i = 0; i < (int)boxes.size(); i++)
 	{
@@ -206,6 +207,7 @@ int intersectBoxes(Rayon r, vector<Boite> boxes, float* distance)
 		bool inteSphere = rayBoxIntersect(r, boxes[i], &minDistance);
 		if (inteSphere)
 		{
+			intersectedSpheres->push_back(boxes.at(i).sphere);
 			if (intersect == -1)
 			{
 				intersect = i;
@@ -221,7 +223,7 @@ int intersectBoxes(Rayon r, vector<Boite> boxes, float* distance)
 			}
 		}
 	}
-	return intersect;
+	return intersectedSpheres;
 }
 
 void intersectLamps(Vector3 intersection, vector<Lampe> lamps, vector<Sphere*> spheres, int intersectSphere, vector<double>* image, int index)
@@ -313,7 +315,7 @@ float RandomFloat(float a, float b) {
 	return a + r;
 }
 
-void sphereToBox(vector<Boite>* b, Sphere s, int idSphere)
+void sphereToBox(vector<Boite>* b, Sphere* s, int idSphere)
 {
 	Boite box = Boite(s,idSphere);
 	b->push_back(box);
@@ -371,12 +373,12 @@ void intersectTree(struct BoxTree* tree, Rayon ray, int depth, vector<double>* i
 		if (depth == DEPTH)
 		{
 			float minDistance;
-			int boxIntersect = intersectBoxes(ray, tree->boxes, &minDistance);
-			if (boxIntersect != -1)
+			vector<Sphere*>* intersectedSpheres = intersectBoxes(ray, tree->boxes, &minDistance);
+			if (intersectedSpheres->size() > 0)
 			{
 				float distanceSphere;
-				bool inter = raySphereIntersect(ray, spheres->at(tree->boxes[boxIntersect].idSphere), &distanceSphere);
-				if (inter)
+				int inter = intersectSpheres(ray, *intersectedSpheres, &distanceSphere);
+				if (inter != -1)
 				{
 					/*Vector3 pointIntersection = Vector3(distanceSphere * ray.GetDirection().x + ray.GetOrigin().x, distanceSphere * ray.GetDirection().y + ray.GetOrigin().y, distanceSphere * ray.GetDirection().z + ray.GetOrigin().z);
 					pointIntersection += ray.GetDirection() * EPSILON;
@@ -388,7 +390,7 @@ void intersectTree(struct BoxTree* tree, Rayon ray, int depth, vector<double>* i
 					{
 						mirrorRebound(pointIntersection, ray, lamps, spheres, boxIntersect, image, index);
 					}*/
-					color(image, index, tree->boxes[boxIntersect].albedo);
+					color(image, index, intersectedSpheres->at(inter)->albedo);
 				}
 				else
 				{
@@ -489,7 +491,7 @@ int main(int argc, char* argv[]) {
 	{
 		SphereCouleur* sphere = new SphereCouleur(10, Vector3(RandomFloat(0, 1000), RandomFloat(0, 1000), RandomFloat(11, 1000)), Couleur(RandomFloat(0.1, 1), RandomFloat(0.1, 1), RandomFloat(0.1, 1)));
 		spheres->push_back(sphere);
-		sphereToBox(&boxes, *sphere,spheres->size()-1);
+		sphereToBox(&boxes, sphere,spheres->size()-1);
 	}
 
 	Boite scene = Boite(Vector3(0, 0, 0), Vector3(1000, 1000, 1000));
