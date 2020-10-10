@@ -35,6 +35,8 @@ struct BoxTree* NewBoxTree(vector<Boite> boxes, Boite box) {
 	return boxTree;
 };
 
+struct BoxTree* boxTree;
+
 void encodeOneStep(const char* filename, std::vector<unsigned char>& image, unsigned width, unsigned height) {
 	//Encode the image
 	unsigned error = lodepng::encode(filename, image, width, height);
@@ -58,7 +60,7 @@ void normalizeColor(vector<unsigned char>* imageOut, vector<double>* image)
 			max = image->at(i + 2);
 	}
 
-	max = max / 4;
+	max = max / 30;
 	for (int i = 0; i < (int)image->size(); i += 4)
 	{
 		if ((int)((image->at(i) / max) * 255) > 255)
@@ -225,7 +227,61 @@ vector<Sphere*>* intersectBoxes(Rayon r, vector<Boite> boxes, float* distance)
 	}
 	return intersectedSpheres;
 }
+bool isTreeIntersected(struct BoxTree* tree, Rayon ray, int depth, vector<Sphere*>* spheres, int* id, float* distance)
+{
+	if (depth == DEPTH)
+	{
+		float minDistance;
+		vector<Sphere*>* intersectedSpheres = intersectBoxes(ray, tree->boxes, &minDistance);
+		if (intersectedSpheres->size() > 0)
+		{
+			float distanceSphere;
+			int inter = intersectSpheres(ray, *intersectedSpheres, &distanceSphere);
+			if (inter != -1)
+			{
+				*id = intersectedSpheres->at(inter)->id;
+				*distance = distanceSphere;
+				return true;
+			}
+		}
+	}
+	else
+	{
+		float leftDistance;
+		bool leftInter = rayBoxIntersect(ray, tree->left->box, &leftDistance);
 
+		float rightDistance;
+		bool rightInter = rayBoxIntersect(ray, tree->right->box, &rightDistance);
+
+		if (leftInter && !rightInter)
+			return isTreeIntersected(tree->left, ray, depth + 1, spheres, id, distance);
+
+		if (rightInter && !leftInter)
+			return isTreeIntersected(tree->right, ray, depth + 1, spheres, id, distance);
+
+		if (leftInter && rightInter)
+		{
+			bool boxInter;
+			if (leftDistance <= rightDistance)
+			{
+				boxInter = isTreeIntersected(tree->left, ray, depth + 1, spheres, id, distance);
+				if (!boxInter)
+					return isTreeIntersected(tree->right, ray, depth + 1, spheres, id, distance);
+				else
+					return true;
+			}
+			else
+			{
+				boxInter = isTreeIntersected(tree->right, ray, depth + 1, spheres, id, distance);
+				if (!boxInter)
+					return isTreeIntersected(tree->left, ray, depth + 1, spheres, id, distance);
+				else
+					return true;
+			}
+		}
+	}
+	return false;
+}
 void intersectLamps(Vector3 intersection, vector<Lampe> lamps, vector<Sphere*> spheres, int intersectSphere, vector<double>* image, int index)
 {
 	Couleur surface = Couleur(0, 0, 0);
@@ -238,8 +294,9 @@ void intersectLamps(Vector3 intersection, vector<Lampe> lamps, vector<Sphere*> s
 		//{
 		lampe.SetOrigin(intersection);
 		lampe.SetDirection(Vector3(lampe.GetDirection().x + distributionLamp(gen), lampe.GetDirection().y + distributionLamp(gen), lampe.GetDirection().z + distributionLamp(gen)));
-		float distanceLampe;
-		int idSphere = intersectSpheres(lampe, spheres, &distanceLampe);
+		float distanceLampe = -1;
+		int idSphere = -1; 
+		isTreeIntersected(boxTree, lampe, 0, &spheres, &idSphere,&distanceLampe);
 		if (idSphere == -1 || distanceLampe > lampe.GetDistance())
 		{
 			surface = colorOnSurface(lampe, spheres[intersectSphere]);
@@ -269,7 +326,8 @@ void mirrorRebound(Vector3 intersection, Rayon rayon, vector<Lampe>* lamps, vect
 
 	rayonSortant.rebound = ++rayon.rebound;
 
-	int sphereIntersect = intersectSpheres(rayonSortant, *spheres, &minDistance);
+	int sphereIntersect = -1;
+	isTreeIntersected(boxTree, rayonSortant, 0, spheres, &sphereIntersect,&minDistance);
 	if (sphereIntersect != -1)
 	{
 		Vector3 newIntersection = Vector3(minDistance * normaleRayon.x + intersection.x, minDistance * normaleRayon.y + intersection.y, (float)(minDistance * normaleRayon.z + intersection.z));
@@ -365,7 +423,7 @@ void dichotomie(struct BoxTree* tree, int depth, bool vertical)
 	}
 }
 
-void intersectTree(struct BoxTree* tree, Rayon ray, int depth, vector<double>* image, int index, vector<Sphere*>* spheres, vector<Lampe>* lamps)
+bool intersectTree(struct BoxTree* tree, Rayon ray, int depth, vector<double>* image, int index, vector<Sphere*>* spheres, vector<Lampe>* lamps)
 {
 	if (depth == DEPTH)
 	{
@@ -378,7 +436,7 @@ void intersectTree(struct BoxTree* tree, Rayon ray, int depth, vector<double>* i
 			if (inter != -1)
 			{
 				int idSphere = intersectedSpheres->at(inter)->id;
-				/*Vector3 pointIntersection = Vector3(distanceSphere * ray.GetDirection().x + ray.GetOrigin().x, distanceSphere * ray.GetDirection().y + ray.GetOrigin().y, distanceSphere * ray.GetDirection().z + ray.GetOrigin().z);
+				Vector3 pointIntersection = Vector3(distanceSphere * ray.GetDirection().x + ray.GetOrigin().x, distanceSphere * ray.GetDirection().y + ray.GetOrigin().y, distanceSphere * ray.GetDirection().z + ray.GetOrigin().z);
 				pointIntersection += ray.GetDirection() * EPSILON;
 				if (!spheres->at(idSphere)->IsMirror())
 				{
@@ -387,8 +445,9 @@ void intersectTree(struct BoxTree* tree, Rayon ray, int depth, vector<double>* i
 				else
 				{
 					mirrorRebound(pointIntersection, ray, lamps, spheres, idSphere, image, index);
-				}*/
-				color(image, index, intersectedSpheres->at(inter)->albedo);
+				}
+				//color(image, index, intersectedSpheres->at(inter)->albedo);
+				return true;
 			}
 			else
 			{
@@ -402,14 +461,42 @@ void intersectTree(struct BoxTree* tree, Rayon ray, int depth, vector<double>* i
 	}
 	else
 	{
-		float distance;
-		if (rayBoxIntersect(ray, tree->left->box, &distance))
-			intersectTree(tree->left, ray, depth + 1, image, index, spheres, lamps);
-		if(rayBoxIntersect(ray, tree->right->box, &distance))
-			intersectTree(tree->right, ray, depth + 1, image, index, spheres, lamps);
-	}
+		float leftDistance;
+		bool leftInter = rayBoxIntersect(ray, tree->left->box, &leftDistance);
 
+		float rightDistance;
+		bool rightInter = rayBoxIntersect(ray, tree->right->box, &rightDistance);
+
+		if (leftInter && !rightInter)
+			return intersectTree(tree->left, ray, depth + 1, image, index, spheres, lamps);
+
+		if (rightInter && !leftInter)
+			return intersectTree(tree->right, ray, depth + 1, image, index, spheres, lamps);
+
+		if (leftInter && rightInter)
+		{
+			bool boxInter;
+			if (leftDistance <= rightDistance)
+			{
+				boxInter = intersectTree(tree->left, ray, depth + 1, image, index, spheres, lamps);
+				if (!boxInter)
+					return intersectTree(tree->right, ray, depth + 1, image, index, spheres, lamps);
+				else
+					return true;
+			}
+			else
+			{
+				boxInter = intersectTree(tree->right, ray, depth + 1, image, index, spheres, lamps);
+				if (!boxInter)
+					return intersectTree(tree->left, ray, depth + 1, image, index, spheres, lamps);
+				else
+					return true;
+			}
+		}
+	}
+	return false;
 }
+
 int main(int argc, char* argv[]) {
 	const char* filename = argc > 1 ? argv[1] : "test.png";
 
@@ -472,17 +559,15 @@ int main(int argc, char* argv[]) {
 
 	vector<Lampe> lampes;
 
-	Lampe lampe1 = Lampe(Vector3(500, 500, 100), 90000000);
+	Lampe lampe1 = Lampe(Vector3(500, 500, 0), 10);
 
-	Lampe lampe2 = Lampe(Vector3(100, 400, 100), 90000000);
+	Lampe lampe2 = Lampe(Vector3(100, 800, 0), 10);
 
-	Lampe lampe3 = Lampe(Vector3(650, -100, 100), 90000000);
+	Lampe lampe3 = Lampe(Vector3(800, 100, 0), 10);
 
 	addLampe(&lampes, lampe1);
 	addLampe(&lampes, lampe2);
 	addLampe(&lampes, lampe3);
-
-
 
 	vector<Boite> boxes;
 	vector<Sphere*>* spheres = new vector<Sphere*>();
@@ -496,7 +581,7 @@ int main(int argc, char* argv[]) {
 
 	Boite scene = Boite(Vector3(0, 0, 0), Vector3(1000, 1000, 1000));
 
-	struct BoxTree* boxTree = NewBoxTree(boxes, scene);
+	boxTree = NewBoxTree(boxes, scene);
 
 	dichotomie(boxTree, 0, true);
 
@@ -517,26 +602,6 @@ int main(int argc, char* argv[]) {
 				float distance;
 				if (rayBoxIntersect(rayon, boxTree->box, &distance))
 					intersectTree(boxTree, rayon, 0, &image, 4 * width * y + 4 * x, spheres, &lampes);
-				/*int sphereIntersect = intersectSpheres(rayon, spheres, &minDistance);
-				//int sphereIntersect = intersectBoxes(rayon, boxTree->right->left->boxes, &minDistance);
-				if (sphereIntersect != -1)
-				{
-					color(&image, 4 * width * y + 4 * x, boxes[sphereIntersect].albedo);
-					Vector3 pointIntersection = Vector3(minDistance * normale.x + x + camera.plan.x, minDistance * normale.y + y + camera.plan.y, (float)(minDistance * normale.z + camera.plan.z));
-					pointIntersection += normale * EPSILON;
-					if (!spheres[sphereIntersect]->IsMirror())
-					{
-						intersectLamps(pointIntersection, lampes, spheres, sphereIntersect, &image, 4 * width * y + 4 * x);
-					}
-					else
-					{
-						mirrorRebound(pointIntersection, rayon,&lampes, &spheres, sphereIntersect, &image, 4 * width * y + 4 * x);
-					}
-					}
-					else
-					{
-						color(&image, 4 * width * y + 4 * x, Couleur(0, 0, 0));
-					}*/
 			}
 		}
 	}
