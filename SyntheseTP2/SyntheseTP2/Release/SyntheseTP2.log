@@ -6,9 +6,18 @@ C:\Users\lmarnat\Documents\GitHub\SimulationRayTracing\SyntheseTP2\SyntheseTP2\I
 C:\Users\lmarnat\Documents\GitHub\SimulationRayTracing\SyntheseTP2\SyntheseTP2\Intersection.cpp(191,54): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
 C:\Users\lmarnat\Documents\GitHub\SimulationRayTracing\SyntheseTP2\SyntheseTP2\Intersection.cpp(229,46): warning C4305: 'argument': truncation from 'double' to 'float'
 C:\Users\lmarnat\Documents\GitHub\SimulationRayTracing\SyntheseTP2\SyntheseTP2\Intersection.cpp(297,54): warning C4305: 'argument': truncation from 'double' to 'float'
+  Main.cpp
+C:\Users\lmarnat\Documents\GitHub\SimulationRayTracing\SyntheseTP2\SyntheseTP2\Main.cpp(74,151): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\lmarnat\Documents\GitHub\SimulationRayTracing\SyntheseTP2\SyntheseTP2\Main.cpp(74,172): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\lmarnat\Documents\GitHub\SimulationRayTracing\SyntheseTP2\SyntheseTP2\Main.cpp(74,193): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\lmarnat\Documents\GitHub\SimulationRayTracing\SyntheseTP2\SyntheseTP2\Main.cpp(74,199): warning C4316: 'SphereCouleur': object allocated on the heap may not be aligned 16
+C:\Users\lmarnat\Documents\GitHub\SimulationRayTracing\SyntheseTP2\SyntheseTP2\Main.cpp(95,107): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\lmarnat\Documents\GitHub\SimulationRayTracing\SyntheseTP2\SyntheseTP2\Main.cpp(95,76): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\lmarnat\Documents\GitHub\SimulationRayTracing\SyntheseTP2\SyntheseTP2\Main.cpp(95,45): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\lmarnat\Documents\GitHub\SimulationRayTracing\SyntheseTP2\SyntheseTP2\Main.cpp(89,10): warning C4101: 'minDistance': unreferenced local variable
   Generating code
-  2 of 594 functions ( 0.3%) were compiled, the rest were copied from previous compilation.
+  4 of 594 functions ( 0.7%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
-    4 functions had inline decision re-evaluated but remain unchanged
+    5 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
   SyntheseTP2.vcxproj -> C:\Users\lmarnat\Documents\GitHub\SimulationRayTracing\SyntheseTP2\Release\SyntheseTP2.exe

@@ -69,9 +69,9 @@ int main(int argc, char* argv[]) {
 	vector<Boite> boxes;
 	vector<Sphere*>* spheres = new vector<Sphere*>();
 
-	for (int i = 0; i < 10; i++)
+	for (int i = 0; i < 10000; i++)
 	{
-		SphereCouleur* sphere = new SphereCouleur(100, Vector3(RandomFloat(0, 1000), RandomFloat(0, 1000), RandomFloat(11, 1000)), Couleur(RandomFloat(0.1, 1), RandomFloat(0.1, 1), RandomFloat(0.1, 1)), i);
+		SphereCouleur* sphere = new SphereCouleur(10, Vector3(RandomFloat(0, 1000), RandomFloat(0, 1000), RandomFloat(11, 1000)), Couleur(RandomFloat(0.1, 1), RandomFloat(0.1, 1), RandomFloat(0.1, 1)), i);
 		spheres->push_back(sphere);
 		sphereToBox(&boxes, sphere);
 	}

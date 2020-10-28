@@ -5,7 +5,7 @@
 #include <random>
 
 #define EPSILON -0.02
-#define DEPTH 5
+#define DEPTH 10
 
 using namespace std;
 
