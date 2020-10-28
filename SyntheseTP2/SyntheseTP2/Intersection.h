@@ -1,14 +1,14 @@
 #pragma once
-
 #include "Boite.h"
 #include "Image.h"
 #include <iostream>
 #include <random>
 
 #define EPSILON -0.02
-#define DEPTH 10
+#define DEPTH 5
 
 using namespace std;
+
 
 struct BoxTree {
 	vector<Boite> boxes;
@@ -18,6 +18,7 @@ struct BoxTree {
 };
 
 extern struct BoxTree* boxTree;
+extern default_random_engine gen;
 
 struct BoxTree* NewBoxTree(vector<Boite> boxes, Boite box);
 

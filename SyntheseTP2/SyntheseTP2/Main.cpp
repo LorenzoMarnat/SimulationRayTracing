@@ -4,6 +4,8 @@
 #include "Mirroir.h"
 using namespace std;
 
+uniform_real_distribution<double> distribution(-0.01, 0.01);
+
 void checkNormale(Vector3* n)
 {
 	if (n->x > 1)
@@ -67,9 +69,9 @@ int main(int argc, char* argv[]) {
 	vector<Boite> boxes;
 	vector<Sphere*>* spheres = new vector<Sphere*>();
 
-	for (int i = 0; i < 100; i++)
+	for (int i = 0; i < 10; i++)
 	{
-		SphereCouleur* sphere = new SphereCouleur(20, Vector3(RandomFloat(0, 1000), RandomFloat(0, 1000), RandomFloat(11, 1000)), Couleur(RandomFloat(0.1, 1), RandomFloat(0.1, 1), RandomFloat(0.1, 1)), i);
+		SphereCouleur* sphere = new SphereCouleur(100, Vector3(RandomFloat(0, 1000), RandomFloat(0, 1000), RandomFloat(11, 1000)), Couleur(RandomFloat(0.1, 1), RandomFloat(0.1, 1), RandomFloat(0.1, 1)), i);
 		spheres->push_back(sphere);
 		sphereToBox(&boxes, sphere);
 	}
@@ -88,13 +90,13 @@ int main(int argc, char* argv[]) {
 
 			Vector3 point = Vector3(camera.plan.x + x, camera.plan.y + y, camera.plan.z);
 			Vector3 normale = camera.Normale(point);
-			for (int i = 0; i < 1; i++)
+			for (int i = 0; i < 10; i++)
 			{
-				//Vector3 normaleRand = Vector3(normale.x + distribution(gen), normale.y + distribution(gen), normale.z + distribution(gen));
-				//checkNormale(&normaleRand);
-				//Rayon rayon = Rayon(normaleRand, point);
+				Vector3 normaleRand = Vector3(normale.x + distribution(gen), normale.y + distribution(gen), normale.z + distribution(gen));
+				checkNormale(&normaleRand);
+				Rayon rayon = Rayon(normaleRand, point);
 
-				Rayon rayon = Rayon(normale, point);
+				//Rayon rayon = Rayon(normale, point);
 				float distance;
 				if (rayBoxIntersect(rayon, boxTree->box, &distance))
 					intersectTree(boxTree, rayon, 0, &image, 4 * width * y + 4 * x, spheres, &lampes);

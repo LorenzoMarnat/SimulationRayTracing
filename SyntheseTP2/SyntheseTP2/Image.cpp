@@ -19,7 +19,7 @@ void normalizeColor(std::vector<unsigned char>* imageOut, std::vector<double>* i
 			max = image->at(i + 2);
 	}
 
-	max = max / 10;
+	max = max / 4;
 	for (int i = 0; i < (int)image->size(); i += 4)
 	{
 		if ((int)((image->at(i) / max) * 255) > 255)

@@ -1,8 +1,7 @@
 #include "Intersection.h"
 
-default_random_engine gen;
-uniform_real_distribution<double> distribution(-0.01, 0.01);
 uniform_real_distribution<double> distributionLamp(-0.1, 0.1);
+default_random_engine gen;
 
 struct BoxTree* boxTree;
 
@@ -133,9 +132,13 @@ bool isTreeIntersected(struct BoxTree* tree, Rayon ray, int depth, vector<Sphere
 			{
 				*id = intersectedSpheres->at(inter)->id;
 				*distance = distanceSphere;
+
+				delete intersectedSpheres;
+
 				return true;
 			}
 		}
+		delete intersectedSpheres;
 	}
 	else
 	{
@@ -182,21 +185,21 @@ void intersectLamps(Vector3 intersection, vector<Lampe> lamps, vector<Sphere*> s
 
 	for (Lampe lampe : lamps)
 	{
-		//for (int i = 0; i < 10; i++)
-		//{
-		lampe.SetOrigin(intersection);
-		lampe.SetDirection(Vector3(lampe.GetDirection().x + distributionLamp(gen), lampe.GetDirection().y + distributionLamp(gen), lampe.GetDirection().z + distributionLamp(gen)));
-		float distanceLampe = -1;
-		int idSphere = -1;
-		isTreeIntersected(boxTree, lampe, 0, &spheres, &idSphere, &distanceLampe);
-		if (idSphere == -1 || distanceLampe > lampe.GetDistance())
+		for (int i = 0; i < 10; i++)
 		{
-			surface = colorOnSurface(lampe, spheres[intersectSphere]);
-			color(image, index, surface);
+			lampe.SetOrigin(intersection);
+			lampe.SetDirection(Vector3(lampe.GetDirection().x + distributionLamp(gen), lampe.GetDirection().y + distributionLamp(gen), lampe.GetDirection().z + distributionLamp(gen)));
+			float distanceLampe = -1;
+			int idSphere = -1;
+			isTreeIntersected(boxTree, lampe, 0, &spheres, &idSphere, &distanceLampe);
+			if (idSphere == -1 || distanceLampe > lampe.GetDistance())
+			{
+				surface = colorOnSurface(lampe, spheres[intersectSphere]);
+				color(image, index, surface);
 
-			nbIntersection++;
+				nbIntersection++;
+			}
 		}
-		//}
 	}
 	if (nbIntersection == 0)
 	{
@@ -300,7 +303,7 @@ bool intersectTree(struct BoxTree* tree, Rayon ray, int depth, vector<double>* i
 				{
 					mirrorRebound(pointIntersection, ray, lamps, spheres, idSphere, image, index);
 				}
-				//color(image, index, intersectedSpheres->at(inter)->albedo);
+				delete intersectedSpheres;
 				return true;
 			}
 			else
@@ -312,6 +315,7 @@ bool intersectTree(struct BoxTree* tree, Rayon ray, int depth, vector<double>* i
 		{
 			color(image, index, Couleur(0, 0, 0));
 		}
+		delete intersectedSpheres;
 	}
 	else
 	{
