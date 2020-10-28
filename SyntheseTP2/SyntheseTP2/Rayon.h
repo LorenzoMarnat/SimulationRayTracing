@@ -13,27 +13,9 @@ public:
 	int rebound;
 	static const int maxRebound = 5;
 
-	Rayon(Vector3 _direction, Vector3 _origin, float _intensity)
-	{
-		direction = _direction;
-		origin = _origin;
-		intensity = _intensity;
-		rebound = 0;
-	}
-	Rayon(Vector3 _direction, Vector3 _origin)
-	{
-		direction = _direction;
-		origin = _origin;
-		intensity = 1;
-		rebound = 0;
-	}
-	Rayon()
-	{
-		direction = Vector3(0,0,0);
-		origin = Vector3(0, 0, 0);
-		intensity = 1;
-		rebound = 0;
-	}
+	Rayon(Vector3 _direction, Vector3 _origin, float _intensity);
+	Rayon(Vector3 _direction, Vector3 _origin);
+	Rayon();
 
 	Vector3 GetDirection() { return direction; }
 

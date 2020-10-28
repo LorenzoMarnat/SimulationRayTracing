@@ -11,50 +11,17 @@ protected:
 	float rayon;
 	Vector3 centre;
 
-	void CheckAlbedo(Couleur *_albedo)
-	{
-		if (_albedo->red > 1)
-			_albedo->red = 1;
-		if (_albedo->red < 0)
-			_albedo->red = 0;
+	void CheckAlbedo(Couleur* _albedo);
 
-		if (_albedo->green > 1)
-			_albedo->green = 1;
-		if (_albedo->green < 0)
-			_albedo->green = 0;
-
-		if (_albedo->blue > 1)
-			_albedo->blue = 1;
-		if (_albedo->blue < 0)
-			_albedo->blue = 0;
-	}
 public:
 	Couleur albedo;
 	int id;
 
-	Sphere(float _rayon, Vector3 _centre, Couleur _albedo,int _id)
-	{
-		rayon = _rayon;
-		centre = _centre;
-		CheckAlbedo(&_albedo);
-		albedo = _albedo;
-		id = _id;
-	}
-	Sphere(float _rayon, Vector3 _centre,Couleur _albedo)
-	{
-		rayon = _rayon;
-		centre = _centre;
-		CheckAlbedo(&_albedo);
-		albedo = _albedo;
-		id = -1;
-	}
-	Sphere()
-	{
-		rayon = 0;
-		centre = Vector3(0, 0, 0);
-		albedo = Couleur(1,1,1);
-		id = -1;
-	}
+	Sphere(float _rayon, Vector3 _centre, Couleur _albedo, int _id);
+
+	Sphere(float _rayon, Vector3 _centre, Couleur _albedo);
+
+	Sphere();
 
 	float GetRayon() { return rayon; }
 

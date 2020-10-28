@@ -4,12 +4,10 @@
 #include "Lampe.h"
 #include "Camera.h"
 #include "Boite.h"
-#include "Tree.h"
-#include <math.h>
+#include "Image.h"
 #include <iostream>
 #include <random>
 
-#define PI 3.141593
 #define EPSILON -0.02
 #define DEPTH 10
 
@@ -37,75 +35,6 @@ struct BoxTree* NewBoxTree(vector<Boite> boxes, Boite box) {
 
 struct BoxTree* boxTree;
 
-void encodeOneStep(const char* filename, std::vector<unsigned char>& image, unsigned width, unsigned height) {
-	//Encode the image
-	unsigned error = lodepng::encode(filename, image, width, height);
-
-	//if there's an error, display it
-	if (error) std::cout << "encoder error " << error << ": " << lodepng_error_text(error) << std::endl;
-}
-
-void normalizeColor(vector<unsigned char>* imageOut, vector<double>* image)
-{
-	double max = 0;
-	for (int i = 0; i < (int)image->size(); i += 4)
-	{
-		if (image->at(i) > max)
-			max = image->at(i);
-
-		if (image->at(i + 1) > max)
-			max = image->at(i + 1);
-
-		if (image->at(i + 2) > max)
-			max = image->at(i + 2);
-	}
-
-	max = max / 30;
-	for (int i = 0; i < (int)image->size(); i += 4)
-	{
-		if ((int)((image->at(i) / max) * 255) > 255)
-			imageOut->at(i) = 255;
-		else
-			imageOut->at(i) = (int)((image->at(i) / max) * 255);
-
-		if ((int)((image->at(i + 1) / max) * 255) > 255)
-			imageOut->at(i + 1) = 255;
-		else
-			imageOut->at(i + 1) = (int)((image->at(i + 1) / max) * 255);
-
-		if ((int)((image->at(i + 2) / max) * 255) > 255)
-			imageOut->at(i + 2) = 255;
-		else
-			imageOut->at(i + 2) = (int)((image->at(i + 2) / max) * 255);
-
-		imageOut->at(i + 3) = image->at(i + 3);
-	}
-
-}
-void color(vector<double>* img, int index, Couleur couleur)
-{
-	img->at(index) += couleur.red;
-
-	img->at(index + 1) += couleur.green;
-
-	img->at(index + 2) += couleur.blue;
-
-	img->at(index + 3) = couleur.alpha;
-}
-
-Couleur colorOnSurface(Lampe lampe, Sphere* sphere)
-{
-	float distanceCarre = (lampe.GetDistance()) * (lampe.GetDistance());
-
-	Vector3 normaleSurface = lampe.GetOrigin() - sphere->GetCentre();
-	normaleSurface = normaleSurface.normalize();
-
-	double scalaire = abs(normaleSurface.dot(lampe.GetDirection()));
-
-	double intensity = (scalaire * lampe.intensity) / (PI * distanceCarre);
-
-	return Couleur(sphere->albedo.red * intensity, sphere->albedo.green * intensity, sphere->albedo.blue * intensity);
-}
 
 void addSphere(vector<Sphere*>* spheres, Sphere* sphere)
 {
@@ -124,9 +53,6 @@ void addLampe(vector<Lampe>* lampes, Lampe lampe)
 bool raySphereIntersect(Rayon r, Sphere* s, float* distance) {
 	bool intersect = false;
 
-	/*cout << s->GetCentre().x << endl;
-	cout << s->GetCentre().x << endl;
-	cout << s->GetCentre().x << endl;*/
 	Vector3 s0 = s->GetCentre();
 	float sr = s->GetRayon();
 	float a = r.GetDirection().dot(r.GetDirection());
@@ -295,8 +221,8 @@ void intersectLamps(Vector3 intersection, vector<Lampe> lamps, vector<Sphere*> s
 		lampe.SetOrigin(intersection);
 		lampe.SetDirection(Vector3(lampe.GetDirection().x + distributionLamp(gen), lampe.GetDirection().y + distributionLamp(gen), lampe.GetDirection().z + distributionLamp(gen)));
 		float distanceLampe = -1;
-		int idSphere = -1; 
-		isTreeIntersected(boxTree, lampe, 0, &spheres, &idSphere,&distanceLampe);
+		int idSphere = -1;
+		isTreeIntersected(boxTree, lampe, 0, &spheres, &idSphere, &distanceLampe);
 		if (idSphere == -1 || distanceLampe > lampe.GetDistance())
 		{
 			surface = colorOnSurface(lampe, spheres[intersectSphere]);
@@ -327,7 +253,7 @@ void mirrorRebound(Vector3 intersection, Rayon rayon, vector<Lampe>* lamps, vect
 	rayonSortant.rebound = ++rayon.rebound;
 
 	int sphereIntersect = -1;
-	isTreeIntersected(boxTree, rayonSortant, 0, spheres, &sphereIntersect,&minDistance);
+	isTreeIntersected(boxTree, rayonSortant, 0, spheres, &sphereIntersect, &minDistance);
 	if (sphereIntersect != -1)
 	{
 		Vector3 newIntersection = Vector3(minDistance * normaleRayon.x + intersection.x, minDistance * normaleRayon.y + intersection.y, (float)(minDistance * normaleRayon.z + intersection.z));
@@ -386,6 +312,31 @@ bool pointInBox(Vector3 p, Boite box)
 	return false;
 }
 
+bool boxInBox(Boite b, Boite box)
+{
+	Vector3 centre = b.centre;
+	bool inBox = false;
+	if (pointInBox(Vector3(centre.x + b.rayon, centre.y + b.rayon, centre.z + b.rayon), box))
+		inBox = true;
+	if (pointInBox(Vector3(centre.x + b.rayon, centre.y + b.rayon, centre.z - b.rayon), box))
+		inBox = true;
+	if (pointInBox(Vector3(centre.x + b.rayon, centre.y - b.rayon, centre.z + b.rayon), box))
+		inBox = true;
+	if (pointInBox(Vector3(centre.x + b.rayon, centre.y - b.rayon, centre.z - b.rayon), box))
+		inBox = true;
+
+	if (pointInBox(Vector3(centre.x - b.rayon, centre.y + b.rayon, centre.z + b.rayon), box))
+		inBox = true;
+	if (pointInBox(Vector3(centre.x - b.rayon, centre.y + b.rayon, centre.z - b.rayon), box))
+		inBox = true;
+	if (pointInBox(Vector3(centre.x - b.rayon, centre.y - b.rayon, centre.z + b.rayon), box))
+		inBox = true;
+	if (pointInBox(Vector3(centre.x - b.rayon, centre.y - b.rayon, centre.z - b.rayon), box))
+		inBox = true;
+
+	return inBox;
+}
+
 void dichotomie(struct BoxTree* tree, int depth, bool vertical)
 {
 
@@ -406,11 +357,11 @@ void dichotomie(struct BoxTree* tree, int depth, bool vertical)
 	for (int i = 0; i < (int)tree->boxes.size(); i++)
 	{
 
-		if (pointInBox(tree->boxes[i].centre, leftBox))
+		if (boxInBox(tree->boxes[i], leftBox))
 			left.push_back(tree->boxes[i]);
-		else
-			if (pointInBox(tree->boxes[i].centre, rightBox))
-				right.push_back(tree->boxes[i]);
+
+		if (boxInBox(tree->boxes[i], rightBox))
+			right.push_back(tree->boxes[i]);
 	}
 
 	tree->left = NewBoxTree(left, leftBox);
@@ -602,6 +553,8 @@ int main(int argc, char* argv[]) {
 				float distance;
 				if (rayBoxIntersect(rayon, boxTree->box, &distance))
 					intersectTree(boxTree, rayon, 0, &image, 4 * width * y + 4 * x, spheres, &lampes);
+				else
+					color(&image, 4 * width * y + 4 * x, Couleur(0, 0, 0));
 			}
 		}
 	}
