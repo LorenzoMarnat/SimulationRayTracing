@@ -1,7 +1,6 @@
 #pragma once
 #include "vector3.h"
 
-
 class Camera
 {
 private:
@@ -12,7 +11,7 @@ public:
 		;
 	Camera(float width, float height, float depth, Vector3 _plan);
 
-	Vector3 GetOrigine() { return origine; }
+	inline Vector3 GetOrigine() { return origine; }
 
 	Vector3 Normale(Vector3 point);
 };

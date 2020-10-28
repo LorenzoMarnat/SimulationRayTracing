@@ -1,10 +1,7 @@
 #pragma once
 #include "lodepng.h"
-#include "Couleur.h"
-#include "Lampe.h"
 #include "Sphere.h"
 #include <math.h>
-#include <vector>
 
 #define PI 3.141593
 

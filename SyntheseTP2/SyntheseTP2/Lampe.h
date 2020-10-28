@@ -20,11 +20,11 @@ public:
 		intersection = 0;
 	}
 
-    Vector3 GetPosition() { return position; }
+	inline Vector3 GetPosition() { return position; }
 
-	float GetDistance() { return distance; }
+	inline float GetDistance() { return distance; }
 
-	void SetDirection(Vector3 _direction)
+	inline void SetDirection(Vector3 _direction)
 	{
 		direction = _direction;
 	}

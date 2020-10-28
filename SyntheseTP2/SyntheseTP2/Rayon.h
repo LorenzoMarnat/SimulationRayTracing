@@ -17,12 +17,12 @@ public:
 	Rayon(Vector3 _direction, Vector3 _origin);
 	Rayon();
 
-	Vector3 GetDirection() { return direction; }
+	inline Vector3 GetDirection() { return direction; }
 
-	Vector3 GetOrigin() { return origin; }
+	inline Vector3 GetOrigin() { return origin; }
 
-	void SetDirection(Vector3 _direction) { direction = _direction; }
+	inline void SetDirection(Vector3 _direction) { direction = _direction; }
 
-	void SetOrigin(Vector3 _origin) { origin = _origin; }
+	inline void SetOrigin(Vector3 _origin) { origin = _origin; }
 };
 

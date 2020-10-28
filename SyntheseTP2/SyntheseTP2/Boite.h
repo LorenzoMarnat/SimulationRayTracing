@@ -1,5 +1,4 @@
 #pragma once
-#include "vector3.h"
 #include "Sphere.h"
 class Boite
 {
@@ -16,5 +15,8 @@ public:
 	Boite(Vector3 _min, Vector3 _max);
 
 	Boite();
+
+	static bool BoxInBox(Boite b, Boite box);
+	static bool PointInBox(Vector3 p, Boite box);
 };
 

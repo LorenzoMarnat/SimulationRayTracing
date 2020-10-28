@@ -1,9 +1,6 @@
 #pragma once
-#include "vector3.h"
-#include "Couleur.h"
 #include <vector>
 #include "Lampe.h"
-//#include "Singleton.h"
 
 class Sphere
 {
@@ -23,13 +20,13 @@ public:
 
 	Sphere();
 
-	float GetRayon() { return rayon; }
+	inline float GetRayon() { return rayon; }
 
-	Vector3 GetCentre() { return centre; }
+	inline Vector3 GetCentre() { return centre; }
 
-	void SetRayon(float _rayon) { rayon = _rayon; }
+	inline void SetRayon(float _rayon) { rayon = _rayon; }
 
-	void SetCentre(Vector3 _centre) { centre = _centre; }
+	inline void SetCentre(Vector3 _centre) { centre = _centre; }
 
-	virtual bool IsMirror() { return false; }
+	inline virtual bool IsMirror() { return false; }
 };

@@ -8,6 +8,6 @@ public:
 	SphereCouleur(float _rayon, Vector3 _centre, Couleur _albedo);
 	SphereCouleur();
 
-	virtual bool IsMirror() { return false; }
+	inline virtual bool IsMirror() { return false; }
 };
 
