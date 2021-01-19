@@ -2,6 +2,7 @@
 #include "Camera.h"
 #include "SphereCouleur.h"
 #include "Mirroir.h"
+#include <chrono>
 using namespace std;
 
 uniform_real_distribution<double> distribution(-0.01, 0.01);
@@ -39,6 +40,9 @@ void sphereToBox(vector<Boite>* b, Sphere* s)
 
 
 int main(int argc, char* argv[]) {
+	// Start measuring time
+	auto begin = std::chrono::high_resolution_clock::now();
+
 	const char* filename = argc > 1 ? argv[1] : "test.png";
 
 	int width = 1024, height = 1024;
@@ -69,7 +73,7 @@ int main(int argc, char* argv[]) {
 	vector<Boite> boxes;
 	vector<Sphere*>* spheres = new vector<Sphere*>();
 
-	for (int i = 0; i < 10000; i++)
+	for (int i = 0; i < 50000; i++)
 	{
 		SphereCouleur* sphere = new SphereCouleur(10, Vector3(RandomFloat(0, 1000), RandomFloat(0, 1000), RandomFloat(11, 1000)), Couleur(RandomFloat(0.1, 1), RandomFloat(0.1, 1), RandomFloat(0.1, 1)), i);
 		spheres->push_back(sphere);
@@ -90,7 +94,7 @@ int main(int argc, char* argv[]) {
 
 			Vector3 point = Vector3(camera.plan.x + x, camera.plan.y + y, camera.plan.z);
 			Vector3 normale = camera.Normale(point);
-			for (int i = 0; i < 10; i++)
+			for (int i = 0; i < 1; i++)
 			{
 				Vector3 normaleRand = Vector3(normale.x + distribution(gen), normale.y + distribution(gen), normale.z + distribution(gen));
 				checkNormale(&normaleRand);
@@ -108,4 +112,10 @@ int main(int argc, char* argv[]) {
 
 	normalizeColor(&imageOut, &image);
 	encodeOneStep(filename, imageOut, width, height);
+
+	// Stop measuring time and calculate the elapsed time
+	auto end = std::chrono::high_resolution_clock::now();
+	auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(end - begin);
+
+	printf("Time measured: %.2f seconds.\n", elapsed.count() * 1e-9);
 }

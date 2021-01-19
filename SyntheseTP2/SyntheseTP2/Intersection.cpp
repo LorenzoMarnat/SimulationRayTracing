@@ -185,7 +185,7 @@ void intersectLamps(Vector3 intersection, vector<Lampe> lamps, vector<Sphere*> s
 
 	for (Lampe lampe : lamps)
 	{
-		for (int i = 0; i < 10; i++)
+		for (int i = 0; i < 1; i++)
 		{
 			lampe.SetOrigin(intersection);
 			lampe.SetDirection(Vector3(lampe.GetDirection().x + distributionLamp(gen), lampe.GetDirection().y + distributionLamp(gen), lampe.GetDirection().z + distributionLamp(gen)));
